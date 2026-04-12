@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Teacher Dashboard — EthicaLearn AI</title>
+  <link rel="stylesheet" href="teacher.css"/>
+  <style>
+    .lang-bar {
+      position: fixed; top: 16px; right: 20px; z-index: 9999;
+      display: flex; gap: 10px;
+    }
+    .lang-btn {
+      padding: 7px 20px; border-radius: 100px;
+      font-weight: 600; font-size: 0.85rem;
+      cursor: pointer; transition: all 0.2s;
+      border: 2px solid #7C5CBF;
+      background: transparent; color: #b8a0e8;
+      font-family: inherit;
+    }
+    .lang-btn.active { background: #7C5CBF; color: #fff; }
+    .lang-btn:hover:not(.active) { background: rgba(124,92,191,0.2); }
+  </style>
+</head>
+<body>
+
+  <div class="lang-bar">
+    <button class="lang-btn active" id="btn-en" onclick="setLang('en')">English</button>
+    <button class="lang-btn" id="btn-ta" onclick="setLang('ta')">தமிழ்</button>
+  </div>
+
+  <!-- LOGIN -->
+  <div id="teacher-login" class="screen">
+    <div class="login-card">
+    <span class="logo">🦊</span>
+    <h1>EthicaLearn AI</h1>
+    <p class="tagline2" data-en="Teacher Dashboard — Monitor student progress" data-ta="ஆசிரியர் டாஷ்போர்டு — மாணவர் முன்னேற்றத்தை கண்காணிக்கவும்">Teacher Dashboard — Monitor student progress</p>
+    <div class="login-box">
+      <input type="password" id="teacher-pass" placeholder="Enter teacher password..."/>
+      <button class="start-btn" onclick="teacherLogin()"><span data-en="Login ➜" data-ta="உள்நுழை ➜">Login ➜</span></button>
+    </div>
+    <p class="login-note"><span data-en="Default password:" data-ta="இயல்புநிலை கடவுச்சொல்:">Default password:</span> <strong>teacher123</strong></p>
+    </div><!-- login-card -->
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="screen hidden">
+    <div class="dash-header">
+      <div class="dash-title">
+        <span class="logo-small">🦊</span>
+        <div>
+          <h1>EthicaLearn AI</h1>
+          <p class="dash-sub" data-en="Teacher Dashboard" data-ta="ஆசிரியர் டாஷ்போர்டு">Teacher Dashboard</p>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="teacherLogout()"><span data-en="Logout" data-ta="வெளியேறு">Logout</span></button>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-num" id="stat-students">0</div>
+        <div class="stat-label" data-en="Total Students" data-ta="மொத்த மாணவர்கள்">Total Students</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-attempts">0</div>
+        <div class="stat-label" data-en="Total Attempts" data-ta="மொத்த முயற்சிகள்">Total Attempts</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-avg">0%</div>
+        <div class="stat-label" data-en="Average Score" data-ta="சராசரி மதிப்பெண்">Average Score</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-perfect">0</div>
+        <div class="stat-label" data-en="Perfect Scores" data-ta="முழு மதிப்பெண்கள்">Perfect Scores</div>
+      </div>
+    </div>
+
+    <!-- LEARNER TABS -->
+    <div class="learner-tabs">
+      <button class="learner-tab active" id="tab-all" onclick="switchTab('all')">
+        <span data-en="📋 All Learners" data-ta="📋 அனைத்து மாணவர்கள்">📋 All Learners</span>
+      </button>
+      <button class="learner-tab" id="tab-ta" onclick="switchTab('ta')">
+        <span data-en="🌟 Tamil Learners" data-ta="🌟 தமிழ் மாணவர்கள்">🌟 Tamil Learners</span>
+      </button>
+    </div>
+
+    <!-- ALL LEARNERS PANEL -->
+    <div id="panel-all">
+    <div class="filters">
+      <select id="filter-level" onchange="applyFilters()">
+        <option value="all"          data-en="All Levels"    data-ta="அனைத்து நிலைகள்">All Levels</option>
+        <option value="beginner"     data-en="Beginner"      data-ta="தொடக்கநிலை">Beginner</option>
+        <option value="intermediate" data-en="Intermediate"  data-ta="இடைநிலை">Intermediate</option>
+        <option value="advanced"     data-en="Advanced"      data-ta="மேம்பட்ட">Advanced</option>
+        <option value="expert"       data-en="Expert"        data-ta="நிபுணர்">Expert</option>
+      </select>
+      <select id="filter-lang" onchange="applyFilters()">
+        <option value="all" data-en="All Languages" data-ta="அனைத்து மொழிகள்">All Languages</option>
+        <option value="en"  data-en="English"       data-ta="ஆங்கிலம்">English</option>
+        <option value="ta"  data-en="Tamil"         data-ta="தமிழ்">Tamil</option>
+      </select>
+      <select id="filter-perf" onchange="applyFilters()">
+        <option value="all"     data-en="All Performance" data-ta="அனைத்து செயல்திறன்">All Performance</option>
+        <option value="perfect" data-en="Perfect Only"    data-ta="முழுமையானவை மட்டும்">Perfect Only</option>
+        <option value="good"    data-en="Good (60%+)"     data-ta="நல்லது (60%+)">Good (60%+)</option>
+        <option value="low"     data-en="Needs Help"      data-ta="உதவி தேவை">Needs Help</option>
+      </select>
+      <button class="refresh-btn" onclick="loadScores()"><span data-en="↻ Refresh" data-ta="↻ புதுப்பி">↻ Refresh</span></button>
+    </div>
+
+    <div class="table-wrapper">
+      <table id="scores-table">
+        <thead>
+          <tr>
+            <th data-en="#"            data-ta="#">#</th>
+            <th data-en="Student Name" data-ta="மாணவர் பெயர்">Student Name</th>
+            <th data-en="Class"        data-ta="வகுப்பு">Class</th>
+            <th data-en="Level"        data-ta="நிலை">Level</th>
+            <th data-en="Score"        data-ta="மதிப்பெண்">Score</th>
+            <th data-en="Performance"  data-ta="செயல்திறன்">Performance</th>
+            <th data-en="Language"     data-ta="மொழி">Language</th>
+            <th data-en="Date & Time"  data-ta="தேதி &amp; நேரம்">Date &amp; Time</th>
+          </tr>
+        </thead>
+        <tbody id="scores-body">
+          <tr><td colspan="8" class="loading-row">Loading scores...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+    </div><!-- end panel-all -->
+
+    <!-- TAMIL LEARNERS PANEL -->
+    <div id="panel-ta" style="display:none;">
+      <div class="tamil-panel-header">
+        <div class="tamil-stats-row" id="ta-stats-row">
+          <div class="ta-stat-card">
+            <div class="ta-stat-num" id="ta-stat-count">0</div>
+            <div class="ta-stat-label" data-en="Tamil Learners" data-ta="தமிழ் மாணவர்கள்">Tamil Learners</div>
+          </div>
+          <div class="ta-stat-card">
+            <div class="ta-stat-num" id="ta-stat-avg">0%</div>
+            <div class="ta-stat-label" data-en="Avg Score" data-ta="சராசரி மதிப்பெண்">Avg Score</div>
+          </div>
+          <div class="ta-stat-card">
+            <div class="ta-stat-num" id="ta-stat-perfect">0</div>
+            <div class="ta-stat-label" data-en="Perfect Scores" data-ta="முழு மதிப்பெண்கள்">Perfect Scores</div>
+          </div>
+          <div class="ta-stat-card">
+            <div class="ta-stat-num" id="ta-stat-top">—</div>
+            <div class="ta-stat-label" data-en="Top Performer" data-ta="சிறந்த மாணவர்">Top Performer</div>
+          </div>
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table id="ta-scores-table">
+          <thead>
+            <tr>
+              <th data-en="#" data-ta="#">#</th>
+              <th data-en="Student Name" data-ta="மாணவர் பெயர்">Student Name</th>
+              <th data-en="Class" data-ta="வகுப்பு">Class</th>
+              <th data-en="Level" data-ta="நிலை">Level</th>
+              <th data-en="Score" data-ta="மதிப்பெண்">Score</th>
+              <th data-en="Performance" data-ta="செயல்திறன்">Performance</th>
+              <th data-en="Date & Time" data-ta="தேதி &amp; நேரம்">Date &amp; Time</th>
+            </tr>
+          </thead>
+          <tbody id="ta-scores-body">
+            <tr><td colspan="7" class="loading-row">Loading Tamil learners...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div><!-- end panel-ta -->
+
+  <script>
+    let currentLang = 'en';
+    function setLang(lang) {
+      currentLang = lang;
+      document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+      document.getElementById('btn-ta').classList.toggle('active', lang === 'ta');
+      document.querySelectorAll('[data-en]').forEach(el => {
+        el.textContent = el.getAttribute('data-' + lang) || el.getAttribute('data-en');
+      });
+      const p = document.getElementById('teacher-pass');
+      if (p) p.placeholder = lang === 'ta' ? 'ஆசிரியர் கடவுச்சொல் உள்ளிடவும்...' : 'Enter teacher password...';
+      // Re-render table body with new lang (no-data row if empty)
+      const noData = document.querySelector('.no-data');
+      if (noData) noData.textContent = lang === 'ta' ? 'மதிப்பெண்கள் இல்லை. மாணவர்களிடம் வினாடி வினாவை முடிக்கச் சொல்லுங்கள்!' : 'No scores found. Ask students to complete quizzes!';
+      const loading = document.querySelector('.loading-row');
+      if (loading) loading.textContent = lang === 'ta' ? 'மதிப்பெண்கள் ஏற்றப்படுகின்றன...' : 'Loading scores...';
+    }
+    window.setLang = setLang;
+  </script>
+  <script type="module" src="teacher.js"></script>
+
+<!-- ═══ ULTRA-PRO RUNNING FOX CURSOR + PARTICLES ═══ -->
+<canvas id="particle-canvas"></canvas>
+<div id="fox-cursor-wrap">
+  <svg id="fox-cursor-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <!-- Running fox SVG that animates legs -->
+    <style>
+      #fox-body { animation: foxRun 0.35s steps(1) infinite; }
+      @keyframes foxRun { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
+      #fox-tail { transform-origin:20px 55px; animation:tailWag 0.4s ease-in-out infinite alternate; }
+      @keyframes tailWag { from{transform:rotate(-18deg)} to{transform:rotate(12deg)} }
+      #leg-fr { transform-origin:58px 72px; animation:legFR 0.35s ease-in-out infinite alternate; }
+      #leg-fl { transform-origin:48px 72px; animation:legFL 0.35s ease-in-out infinite alternate; }
+      #leg-rr { transform-origin:32px 72px; animation:legRR 0.35s ease-in-out infinite alternate; }
+      #leg-rl { transform-origin:22px 72px; animation:legRL 0.35s ease-in-out infinite alternate; }
+      @keyframes legFR { from{transform:rotate(-25deg)} to{transform:rotate(20deg)} }
+      @keyframes legFL { from{transform:rotate(20deg)} to{transform:rotate(-25deg)} }
+      @keyframes legRR { from{transform:rotate(20deg)} to{transform:rotate(-25deg)} }
+      @keyframes legRL { from{transform:rotate(-25deg)} to{transform:rotate(20deg)} }
+    </style>
+    <g id="fox-body">
+      <!-- Tail -->
+      <g id="fox-tail">
+        <ellipse cx="16" cy="52" rx="13" ry="7" transform="rotate(-35 16 52)" fill="#FF8C42"/>
+        <ellipse cx="9" cy="44" rx="6" ry="4" transform="rotate(-35 9 44)" fill="#fff"/>
+      </g>
+      <!-- Body -->
+      <ellipse cx="50" cy="62" rx="28" ry="16" fill="#FF6B1A"/>
+      <!-- Head -->
+      <circle cx="72" cy="46" r="18" fill="#FF6B1A"/>
+      <!-- Ears -->
+      <polygon points="60,33 55,16 68,30" fill="#FF6B1A"/>
+      <polygon points="82,30 88,14 78,30" fill="#FF6B1A"/>
+      <polygon points="61,31 57,20 67,30" fill="#FF2060"/>
+      <polygon points="81,29 86,18 78,29" fill="#FF2060"/>
+      <!-- Face -->
+      <ellipse cx="77" cy="52" rx="9" ry="6" fill="#FFD5B0"/>
+      <!-- Eyes -->
+      <circle cx="68" cy="43" r="3.5" fill="#111"/>
+      <circle cx="76" cy="43" r="3.5" fill="#111"/>
+      <circle cx="69.2" cy="42" r="1.2" fill="#fff"/>
+      <circle cx="77.2" cy="42" r="1.2" fill="#fff"/>
+      <!-- Nose -->
+      <ellipse cx="80" cy="50" rx="2.5" ry="1.8" fill="#333"/>
+      <!-- Mouth -->
+      <path d="M78 52 Q80 54 82 52" stroke="#555" stroke-width="1" fill="none"/>
+      <!-- Legs -->
+      <rect id="leg-fr" x="55" y="72" width="7" height="18" rx="3.5" fill="#FF6B1A"/>
+      <rect id="leg-fl" x="44" y="72" width="7" height="18" rx="3.5" fill="#e05a10"/>
+      <rect id="leg-rr" x="28" y="72" width="7" height="18" rx="3.5" fill="#FF6B1A"/>
+      <rect id="leg-rl" x="17" y="72" width="7" height="18" rx="3.5" fill="#e05a10"/>
+      <!-- Belly -->
+      <ellipse cx="50" cy="65" rx="16" ry="8" fill="#FFD5B0" opacity="0.6"/>
+    </g>
+  </svg>
+</div>
+<script>
+(function(){
+  const wrap = document.getElementById('fox-cursor-wrap');
+  let mx=window.innerWidth/2, my=window.innerHeight/2;
+  let cx=mx, cy=my;
+  let lastX=mx, lastY=my;
+  let trailTimer=0, pawTimer=0, paws=['🐾'];
+  
+  document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
+  
+  function lerp(a,b,t){ return a+(b-a)*t; }
+  
+  function loop(){
+    cx = lerp(cx, mx, 0.18);
+    cy = lerp(cy, my, 0.18);
+    wrap.style.left = cx+'px';
+    wrap.style.top  = cy+'px';
+    
+    const dx=mx-lastX, dy=my-lastY;
+    const speed=Math.sqrt(dx*dx+dy*dy);
+    
+    // Rotate fox in direction of movement
+    if(speed>1){
+      const angle = Math.atan2(dy,dx)*(180/Math.PI);
+      const svg = document.getElementById('fox-cursor-svg');
+      if(dx < -5) { svg.style.transform='scaleX(-1)'; }
+      else if(dx > 5) { svg.style.transform='scaleX(1)'; }
+    }
+    
+    // Trail dots
+    if(speed>4){
+      trailTimer++;
+      if(trailTimer%3===0){
+        const t=document.createElement('div');
+        t.className='fox-cursor-trail';
+        const sz=4+Math.random()*5;
+        t.style.cssText=`left:${lastX}px;top:${lastY}px;width:${sz}px;height:${sz}px;background:radial-gradient(circle,rgba(255,107,26,.8),transparent)`;
+        document.body.appendChild(t);
+        setTimeout(()=>t.remove(),600);
+      }
+      // Paw prints occasionally
+      pawTimer++;
+      if(pawTimer%18===0){
+        const p=document.createElement('div');
+        p.className='fox-paw';
+        p.textContent='🐾';
+        p.style.cssText=`left:${lastX}px;top:${lastY}px;`;
+        document.body.appendChild(p);
+        setTimeout(()=>p.remove(),900);
+      }
+    }
+    lastX=mx; lastY=my;
+    requestAnimationFrame(loop);
+  }
+  loop();
+  
+  // Particle system
+  const canvas=document.getElementById('particle-canvas');
+  if(canvas){
+    const ctx=canvas.getContext('2d');
+    let W,H,particles=[];
+    function resize(){ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
+    resize();
+    window.addEventListener('resize',resize);
+    for(let i=0;i<55;i++) particles.push(mkP());
+    function mkP(){
+      return{
+        x:Math.random()*window.innerWidth,
+        y:Math.random()*window.innerHeight,
+        r:Math.random()*1.8+0.4,
+        vx:(Math.random()-.5)*.28,
+        vy:(Math.random()-.5)*.28,
+        a:Math.random()*.5+.1,
+        c:Math.random()<.5?'255,107,26':Math.random()<.5?'191,95,255':'0,245,255'
+      };
+    }
+    function drawParticles(){
+      ctx.clearRect(0,0,W,H);
+      particles.forEach(p=>{
+        p.x+=p.vx; p.y+=p.vy;
+        if(p.x<0||p.x>W) p.vx*=-1;
+        if(p.y<0||p.y>H) p.vy*=-1;
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle=`rgba(${p.c},${p.a})`;
+        ctx.fill();
+      });
+      // Draw connecting lines between close particles
+      for(let i=0;i<particles.length;i++){
+        for(let j=i+1;j<particles.length;j++){
+          const dx=particles[i].x-particles[j].x;
+          const dy=particles[i].y-particles[j].y;
+          const dist=Math.sqrt(dx*dx+dy*dy);
+          if(dist<130){
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x,particles[i].y);
+            ctx.lineTo(particles[j].x,particles[j].y);
+            ctx.strokeStyle=`rgba(191,95,255,${(1-dist/130)*.08})`;
+            ctx.lineWidth=.6;
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(drawParticles);
+    }
+    drawParticles();
+  }
+})();
+</script>
+
+</body>
+</html>

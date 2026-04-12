@@ -1,0 +1,2825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>EthicaLearn AI — Intelligent Tutor</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
+/* ============================================================
+   ETHICALEARN AI — STUDENT PLATFORM — ULTRA-PRO NEON FOX
+   Matches Teacher Dashboard Design System Exactly
+   ============================================================ */
+:root{
+  --fox-orange:#FF6B1A; --fox-amber:#FFB347; --fox-gold:#FFD700;
+  --neon-purple:#BF5FFF; --neon-cyan:#00F5FF; --neon-pink:#FF0099;
+  --neon-green:#39FF14; --deep-bg:#07070F;
+  --surface-1:rgba(255,255,255,0.04); --surface-2:rgba(255,255,255,0.07);
+  --border-dim:rgba(255,255,255,0.08);
+  --text-main:#F0EEF8; --text-muted:#8A8AA8; --text-dim:#4A4A6A;
+  /* legacy aliases for JS references */
+  --fox-deep:#C94A00;
+  --fox-white:#F0EEF8;
+  --fox-cream:#FFD5B0;
+  --dark-bg:#07070F;
+  --dark-card:rgba(255,255,255,0.04);
+  --dark-card2:rgba(255,255,255,0.02);
+  --dark-border:rgba(255,255,255,0.08);
+  --text-primary:#F0EEF8;
+  --text-accent:#FF6B1A;
+  --glow-orange:rgba(255,107,26,0.35);
+  --glow-amber:rgba(255,179,71,0.2);
+  --beginner:#39FF14; --intermediate:#FFD700;
+  --advanced:#FF6B1A; --expert:#BF5FFF; --bonus:#00F5FF;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+*{cursor:none!important;}
+
+/* FOX CURSOR — matches teacher dashboard */
+#fox-cursor-wrap{position:fixed;top:0;left:0;pointer-events:none;z-index:999999;transform:translate(-50%,-60%);will-change:transform;}
+#fox-cursor-svg{width:52px;height:52px;filter:drop-shadow(0 0 8px #FF6B1A) drop-shadow(0 0 18px rgba(255,107,26,.5));}
+.fox-cursor-trail{position:fixed;pointer-events:none;z-index:999997;border-radius:50%;transform:translate(-50%,-50%);animation:trailFade .6s ease forwards;}
+@keyframes trailFade{0%{opacity:.7;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(0)}}
+.fox-paw{position:fixed;pointer-events:none;z-index:999996;font-size:11px;animation:pawFade .9s ease forwards;}
+@keyframes pawFade{0%{opacity:.9;transform:scale(1)}100%{opacity:0;transform:scale(.4) translateY(-14px)}}
+
+/* BODY + GRID BACKGROUND — matches teacher.css exactly */
+body{font-family:'Space Grotesk',sans-serif;background:var(--deep-bg);min-height:100vh;color:var(--text-main);overflow-x:hidden;position:relative;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(191,95,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(191,95,255,.035) 1px,transparent 1px);background-size:56px 56px;animation:gridPulse 9s ease-in-out infinite;pointer-events:none;z-index:0;}
+@keyframes gridPulse{0%,100%{opacity:.4}50%{opacity:1}}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 700px 450px at 15% 15%,rgba(255,107,26,.055) 0%,transparent 60%),radial-gradient(ellipse 600px 350px at 85% 85%,rgba(191,95,255,.07) 0%,transparent 60%),radial-gradient(ellipse 500px 400px at 55% 5%,rgba(0,245,255,.03) 0%,transparent 60%);animation:orbDrift 14s ease-in-out infinite alternate;}
+@keyframes orbDrift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(25px,-35px) scale(1.07)}}
+#particle-canvas{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.6;}
+
+/* Legacy bg divs — hidden, using body::before/::after */
+.bg-layer,.bg-grid,.bg-orb{display:none;}
+
+/* ── SCREEN SYSTEM ── */
+.screen{display:none;position:relative;z-index:1;}
+.screen.active{display:flex;flex-direction:column;min-height:100vh;}
+
+/* ── LANG BAR ── */
+.lang-toggle-bar,.lang-bar{position:fixed;top:16px;right:20px;z-index:9999;display:flex;gap:8px;}
+.lang-btn{padding:7px 17px;border-radius:100px;border:1.5px solid rgba(255,107,26,.38);background:rgba(255,107,26,.07);color:var(--text-muted);font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;font-family:'Space Grotesk',sans-serif;}
+.lang-btn.active{background:linear-gradient(135deg,var(--fox-orange),var(--neon-purple));border-color:transparent;color:#fff;box-shadow:0 0 18px rgba(255,107,26,.4);}
+.lang-btn:hover:not(.active){border-color:var(--fox-orange);color:var(--fox-orange);}
+
+/* ── ANIMATIONS ── */
+@keyframes cardIn{from{opacity:0;transform:translateY(40px) scale(.9)}to{opacity:1;transform:none}}
+@keyframes foxBounce{0%,100%{transform:translateY(0) rotate(0)}25%{transform:translateY(-14px) rotate(-6deg)}75%{transform:translateY(-7px) rotate(4deg)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes shimmer{0%{background-position:0%;}100%{background-position:200%;}}
+@keyframes splashIn{from{opacity:0;transform:translateY(40px);}to{opacity:1;transform:translateY(0);}}
+@keyframes orbFloat{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-30px) scale(1.05);}}
+
+/* ── SPLASH / DID YOU KNOW ── */
+#splash-screen{align-items:center;justify-content:center;background:var(--deep-bg);}
+.splash-inner,.dyk-inner{text-align:center;padding:40px 20px;max-width:520px;width:90%;animation:cardIn .55s cubic-bezier(.34,1.56,.64,1) both;}
+.dyk-warning-icon{font-size:56px;margin-bottom:16px;filter:drop-shadow(0 0 20px rgba(255,200,50,.5));}
+.dyk-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,5vw,2.6rem);font-weight:900;background:linear-gradient(100deg,var(--fox-orange),var(--fox-gold) 45%,var(--neon-purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:24px;letter-spacing:.04em;}
+.dyk-cards{display:flex;flex-direction:column;gap:11px;margin:0 0 20px;}
+.dyk-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,107,26,.18);border-radius:16px;padding:13px 17px;text-align:left;animation:slideUp .5s ease both;transition:border-color .2s,box-shadow .2s;}
+.dyk-card:hover{border-color:rgba(255,107,26,.5);box-shadow:0 0 22px rgba(255,107,26,.1);}
+.dyk-card:nth-child(1){animation-delay:.12s}.dyk-card:nth-child(2){animation-delay:.27s}.dyk-card:nth-child(3){animation-delay:.42s}
+.dyk-stat{display:block;font-family:'Orbitron',sans-serif;font-size:1.5rem;font-weight:700;color:var(--fox-gold);margin-bottom:4px;}
+.dyk-stat-yellow{color:var(--fox-amber);}
+.dyk-stat-blue{color:var(--neon-cyan);}
+.dyk-desc{display:block;font-size:.8rem;color:var(--text-muted);line-height:1.5;}
+.dyk-tagline{font-size:.85rem;color:var(--text-muted);margin-bottom:24px;line-height:1.6;font-style:italic;}
+
+/* CTA buttons */
+.dyk-cta,.cta-btn,.start-btn{display:block;width:100%;background:linear-gradient(135deg,var(--fox-orange),var(--neon-purple));border:none;border-radius:14px;padding:15px;font-size:1rem;font-weight:700;color:#fff;letter-spacing:.05em;font-family:'Space Grotesk',sans-serif;cursor:pointer;transition:all .25s;box-shadow:0 0 32px rgba(255,107,26,.4);text-transform:uppercase;position:relative;overflow:hidden;}
+.dyk-cta:hover,.cta-btn:hover,.start-btn:hover{transform:translateY(-3px);box-shadow:0 0 55px rgba(255,107,26,.6);}
+/* inline-flex override for button usage with gap/icon */
+button.cta-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;width:auto;}
+
+/* Legacy splash */
+.fox-mascot{font-size:76px;display:block;margin-bottom:8px;animation:foxBounce 2.2s ease-in-out infinite;filter:drop-shadow(0 0 22px rgba(255,107,26,.7));}
+.splash-title{font-family:'Orbitron',sans-serif;font-size:clamp(2rem,5vw,3rem);font-weight:900;background:linear-gradient(100deg,var(--fox-orange),var(--fox-gold) 45%,var(--neon-purple));background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 3s linear infinite;letter-spacing:.06em;}
+.splash-sub{font-size:.85rem;color:var(--text-muted);margin:12px 0 20px;}
+.splash-tagline{display:inline-block;padding:6px 16px;border:1px solid rgba(191,95,255,.3);border-radius:100px;font-size:.75rem;color:#D4ADFF;margin-bottom:28px;background:rgba(191,95,255,.08);}
+.fact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0;}
+.fact-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,107,26,.18);border-radius:16px;padding:16px 14px;transition:all .2s;}
+.fact-card:hover{transform:translateY(-4px);border-color:rgba(255,107,26,.5);box-shadow:0 0 22px rgba(255,107,26,.1);}
+.fact-num{display:block;font-family:'Orbitron',sans-serif;font-size:1.4rem;font-weight:700;color:var(--fox-gold);}
+.fact-text{display:block;font-size:.75rem;color:var(--text-muted);margin-top:5px;}
+
+/* ── LOGIN ── */
+#login-screen{align-items:center;justify-content:center;flex-direction:column;}
+.login-card{background:linear-gradient(135deg,rgba(255,107,26,.08),rgba(191,95,255,.06));border:1px solid rgba(255,107,26,.22);border-radius:28px;padding:50px 40px;max-width:440px;width:90%;backdrop-filter:blur(24px);box-shadow:0 0 70px rgba(255,107,26,.09),inset 0 1px 0 rgba(255,255,255,.07);animation:cardIn .55s cubic-bezier(.34,1.56,.64,1) both;text-align:center;}
+.login-fox{font-size:64px;margin-bottom:8px;display:block;filter:drop-shadow(0 0 22px rgba(255,107,26,.7));animation:foxBounce 2.2s ease-in-out infinite;}
+.login-title{font-family:'Orbitron',sans-serif;font-size:1.55rem;font-weight:700;background:linear-gradient(100deg,var(--fox-orange),var(--fox-gold) 45%,var(--neon-purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px;}
+.login-sub{color:var(--text-muted);font-size:.82rem;margin-bottom:28px;}
+.fox-input{width:100%;padding:13px 17px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:var(--text-main);font-size:.95rem;outline:none;font-family:'Space Grotesk',sans-serif;transition:border-color .2s,box-shadow .2s;margin-bottom:12px;display:block;}
+.fox-input:focus{border-color:var(--fox-orange);box-shadow:0 0 22px rgba(255,107,26,.2);}
+.fox-input::placeholder{color:var(--text-dim);}
+
+/* ── MAIN HOME LAYOUT ── */
+#home-screen{flex-direction:row;}
+.sidebar{width:280px;flex-shrink:0;background:rgba(0,0,0,.6);border-right:1px solid rgba(255,107,26,.12);height:100vh;position:sticky;top:0;overflow-y:auto;display:flex;flex-direction:column;scrollbar-width:thin;scrollbar-color:rgba(255,107,26,.25) transparent;backdrop-filter:blur(20px);}
+.sidebar-logo{padding:22px 20px;border-bottom:1px solid rgba(255,107,26,.1);display:flex;align-items:center;gap:12px;}
+.sidebar-logo .logo-icon{font-size:28px;filter:drop-shadow(0 0 10px rgba(255,107,26,.7));}
+.sidebar-logo .logo-text{font-family:'Orbitron',sans-serif;font-weight:700;font-size:1rem;color:var(--fox-orange);}
+.sidebar-logo .logo-text span{color:var(--text-muted);}
+.user-panel{padding:14px 20px;border-bottom:1px solid rgba(255,107,26,.08);}
+.user-name{font-family:'Orbitron',sans-serif;font-weight:700;font-size:.88rem;color:var(--fox-amber);margin-bottom:3px;}
+.user-class{font-size:.74rem;color:var(--text-dim);}
+.xp-bar-wrap{margin-top:10px;}
+.xp-label{font-size:.7rem;color:var(--text-muted);display:flex;justify-content:space-between;margin-bottom:5px;}
+.xp-bar{height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--fox-orange),var(--neon-purple));border-radius:3px;transition:width 1s ease;box-shadow:0 0 10px rgba(255,107,26,.4);}
+.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:14px 20px;border-bottom:1px solid rgba(255,107,26,.08);}
+.stat-box{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:10px;text-align:center;}
+.stat-val{font-family:'Orbitron',sans-serif;font-size:1rem;color:var(--fox-amber);font-weight:700;}
+.stat-key{font-size:.64rem;color:var(--text-muted);margin-top:2px;text-transform:uppercase;letter-spacing:.05em;}
+.nav-section{padding:12px 20px 4px;font-size:.62rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:1.5px;font-weight:700;font-family:'Orbitron',sans-serif;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;transition:all .2s;border-left:3px solid transparent;font-size:.82rem;color:var(--text-muted);cursor:pointer;}
+.nav-item:hover{background:rgba(255,107,26,.06);border-left-color:var(--fox-orange);color:var(--fox-amber);}
+.nav-item.active{background:rgba(255,107,26,.1);border-left-color:var(--fox-orange);color:var(--fox-orange);}
+.nav-icon{font-size:1rem;}
+.level-badge{margin-left:auto;font-size:.6rem;padding:2px 7px;border-radius:100px;font-weight:700;}
+.badge-beginner{background:rgba(57,255,20,.12);color:var(--neon-green);}
+.badge-intermediate{background:rgba(255,215,0,.12);color:var(--fox-gold);}
+.badge-advanced{background:rgba(255,107,26,.12);color:var(--fox-orange);}
+.badge-expert{background:rgba(191,95,255,.12);color:var(--neon-purple);}
+.badge-bonus{background:rgba(0,245,255,.12);color:var(--neon-cyan);}
+.badge-done{background:rgba(57,255,20,.15);color:var(--neon-green);}
+.badge-locked{background:rgba(100,100,100,.12);color:#555;}
+.sidebar-footer{margin-top:auto;padding:14px 20px;border-top:1px solid rgba(255,107,26,.08);display:flex;gap:8px;}
+.fox-btn-sm{flex:1;padding:9px;border:1px solid rgba(255,255,255,.08);border-radius:8px;background:transparent;color:var(--text-muted);font-size:.75rem;transition:all .2s;font-family:'Space Grotesk',sans-serif;cursor:pointer;}
+.fox-btn-sm:hover{border-color:var(--fox-orange);color:var(--fox-orange);}
+
+/* Mobile toggle */
+.mob-toggle{display:none;padding:12px 16px;background:rgba(0,0,0,.6);border-bottom:1px solid rgba(255,107,26,.12);align-items:center;gap:10px;flex-shrink:0;backdrop-filter:blur(20px);}
+.hamburger-btn{background:none;border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:6px 10px;color:var(--text-muted);cursor:pointer;}
+
+/* Main content */
+.main-content{flex:1;height:100vh;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(255,107,26,.25) transparent;}
+
+/* ── DASHBOARD ── */
+#view-dashboard{padding:32px;}
+.dash-header{margin-bottom:28px;}
+.dash-greeting{font-family:'Orbitron',sans-serif;font-size:clamp(1.1rem,2.2vw,1.6rem);font-weight:700;margin-bottom:6px;background:linear-gradient(100deg,var(--fox-orange),var(--fox-gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.dash-greeting span{-webkit-text-fill-color:unset;color:var(--fox-orange);}
+.dash-sub{color:var(--text-muted);font-size:.82rem;}
+.progress-overview{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:28px;}
+.prog-card{background:linear-gradient(135deg,rgba(255,255,255,.04),rgba(255,255,255,.01));border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:20px;position:relative;overflow:hidden;transition:all .22s;animation:slideUp .4s ease both;}
+.prog-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--fox-orange),var(--neon-purple),transparent);}
+.prog-card:hover{transform:translateY(-4px);border-color:rgba(255,107,26,.3);box-shadow:0 8px 30px rgba(0,0,0,.3),0 0 24px rgba(255,107,26,.08);}
+.prog-card-icon{font-size:1.6rem;margin-bottom:8px;}
+.prog-card-val{font-family:'Orbitron',sans-serif;font-size:1.5rem;font-weight:700;background:linear-gradient(135deg,var(--fox-orange),var(--fox-gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.prog-card-label{font-size:.68rem;color:var(--text-muted);margin-top:3px;text-transform:uppercase;letter-spacing:.07em;}
+.prog-bar{height:4px;background:rgba(255,255,255,.06);border-radius:2px;margin-top:12px;overflow:hidden;}
+.prog-bar-fill{height:100%;border-radius:2px;transition:width 1.5s ease;}
+
+.section-heading{font-family:'Orbitron',sans-serif;font-size:.78rem;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:10px;color:var(--fox-orange);text-transform:uppercase;letter-spacing:.07em;}
+.section-heading::after{content:'';flex:1;height:1px;background:rgba(255,107,26,.18);}
+
+.levels-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:28px;}
+.level-card{background:linear-gradient(135deg,rgba(255,255,255,.04),rgba(255,255,255,.01));border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:20px;transition:all .22s;position:relative;overflow:hidden;}
+.level-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--lc,linear-gradient(90deg,var(--fox-orange),var(--neon-purple)));transform:scaleX(0);transform-origin:left;transition:transform .3s;}
+.level-card:hover::after{transform:scaleX(1);}
+.level-card:hover{border-color:rgba(255,107,26,.3);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.3),0 0 24px rgba(255,107,26,.06);}
+.level-card.locked{opacity:.4;pointer-events:none;}
+.level-card-header{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.level-num{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-weight:700;font-size:.75rem;background:rgba(255,107,26,.12);border:1px solid rgba(255,107,26,.25);color:var(--fox-orange);flex-shrink:0;}
+.level-name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.88rem;line-height:1.3;color:var(--text-main);}
+.level-tag{font-size:.68rem;color:var(--text-muted);margin-top:2px;}
+.level-card-topics{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;}
+.topic-chip{padding:3px 9px;border-radius:100px;font-size:.65rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);color:var(--text-muted);}
+.level-card-footer{display:flex;align-items:center;justify-content:space-between;}
+.level-xp{font-family:'Orbitron',sans-serif;font-size:.7rem;color:var(--fox-gold);}
+.level-start-btn{padding:6px 14px;border-radius:8px;background:rgba(255,107,26,.12);border:1px solid rgba(255,107,26,.28);color:var(--fox-orange);font-size:.75rem;font-weight:700;transition:all .2s;font-family:'Space Grotesk',sans-serif;cursor:pointer;}
+.level-start-btn:hover{background:var(--fox-orange);color:#fff;box-shadow:0 0 18px rgba(255,107,26,.4);}
+.level-done-mark{color:var(--neon-green);font-size:1.1rem;}
+
+/* ── AI TUTOR CHAT ── */
+#view-tutor{display:flex;flex-direction:column;height:100vh;}
+.tutor-header{padding:18px 26px;border-bottom:1px solid rgba(255,107,26,.12);display:flex;align-items:center;gap:16px;flex-shrink:0;background:rgba(0,0,0,.45);backdrop-filter:blur(20px);}
+.tutor-fox{font-size:38px;animation:foxBounce 3s ease-in-out infinite;}
+.tutor-info .tutor-name{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;color:var(--fox-orange);}
+.tutor-info .tutor-status{font-size:.74rem;color:var(--neon-green);display:flex;align-items:center;gap:5px;}
+.tutor-info .tutor-status::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--neon-green);display:inline-block;animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.tutor-context-select{margin-left:auto;padding:8px 14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:9px;color:var(--text-main);font-family:'Space Grotesk',sans-serif;font-size:.82rem;max-width:200px;cursor:pointer;}
+.tutor-context-select:focus{outline:none;border-color:var(--fox-orange);}
+.tutor-context-select option{background:#07070F;}
+.chat-area{flex:1;overflow-y:auto;padding:22px 26px;display:flex;flex-direction:column;gap:14px;scrollbar-width:thin;scrollbar-color:rgba(255,107,26,.25) transparent;}
+.chat-msg{display:flex;gap:12px;animation:msgIn .3s ease;max-width:82%;}
+@keyframes msgIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+.chat-msg.user{flex-direction:row-reverse;align-self:flex-end;}
+.chat-msg.user .msg-bubble{background:linear-gradient(135deg,var(--fox-orange),var(--neon-purple));color:white;border-bottom-right-radius:4px;}
+.chat-msg.ai .msg-bubble{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-bottom-left-radius:4px;}
+.msg-avatar{width:34px;height:34px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);align-self:flex-end;}
+.msg-bubble{padding:13px 17px;border-radius:16px;font-size:.88rem;line-height:1.7;max-width:100%;}
+.msg-bubble code{background:rgba(255,107,26,.15);padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--fox-amber);}
+.msg-bubble pre{background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:14px;margin:10px 0;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--fox-amber);}
+.msg-bubble h4{color:var(--fox-amber);margin:12px 0 6px;font-family:'Orbitron',sans-serif;font-size:.8rem;}
+.msg-bubble ul{padding-left:18px;margin:8px 0;}
+.msg-bubble li{margin-bottom:4px;}
+.msg-bubble strong{color:var(--fox-amber);}
+.typing-indicator .msg-bubble{padding:14px 18px;}
+.dot-wave{display:flex;gap:5px;align-items:center;}
+.dot-wave span{width:7px;height:7px;background:var(--fox-orange);border-radius:50%;animation:dotBounce 1.2s ease-in-out infinite;}
+.dot-wave span:nth-child(2){animation-delay:.15s;}
+.dot-wave span:nth-child(3){animation-delay:.3s;}
+@keyframes dotBounce{0%,80%,100%{transform:scale(.7);opacity:.5;}40%{transform:scale(1.1);opacity:1;}}
+.chat-footer{padding:18px 26px;border-top:1px solid rgba(255,107,26,.12);background:rgba(0,0,0,.45);backdrop-filter:blur(20px);flex-shrink:0;}
+.quick-prompts{display:flex;gap:7px;margin-bottom:11px;overflow-x:auto;scrollbar-width:none;padding-bottom:3px;}
+.quick-prompts::-webkit-scrollbar{display:none;}
+.qp-btn{flex-shrink:0;padding:5px 12px;border-radius:100px;border:1px solid rgba(255,255,255,.08);background:transparent;color:var(--text-muted);font-size:.74rem;transition:all .2s;white-space:nowrap;font-family:'Space Grotesk',sans-serif;cursor:pointer;}
+.qp-btn:hover{border-color:var(--fox-orange);color:var(--fox-orange);background:rgba(255,107,26,.07);}
+.chat-input-row{display:flex;gap:9px;}
+.chat-input{flex:1;padding:12px 16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;color:var(--text-main);font-family:'Space Grotesk',sans-serif;font-size:.9rem;resize:none;max-height:120px;overflow-y:auto;transition:border-color .2s;}
+.chat-input:focus{outline:none;border-color:var(--fox-orange);box-shadow:0 0 18px rgba(255,107,26,.14);}
+.chat-input::placeholder{color:var(--text-dim);}
+.send-btn{width:44px;height:44px;border-radius:11px;border:none;background:linear-gradient(135deg,var(--fox-orange),var(--neon-purple));color:#fff;font-size:1.1rem;cursor:pointer;align-self:flex-end;transition:all .2s;box-shadow:0 0 18px rgba(255,107,26,.35);}
+.send-btn:hover{transform:scale(1.08);box-shadow:0 0 28px rgba(255,107,26,.55);}
+.send-btn:disabled{opacity:.4;transform:none;}
+
+/* ── QUIZ ── */
+#view-quiz{display:flex;flex-direction:column;height:100vh;}
+.quiz-topbar{display:flex;align-items:center;gap:12px;padding:13px 22px;background:rgba(0,0,0,.55);border-bottom:1px solid rgba(255,107,26,.13);backdrop-filter:blur(20px);position:sticky;top:0;z-index:10;box-shadow:0 4px 30px rgba(0,0,0,.35);}
+.quiz-level-info{flex:1;}
+.quiz-level-name{font-family:'Orbitron',sans-serif;font-weight:700;font-size:.88rem;color:var(--text-main);}
+.quiz-level-diff{font-size:.68rem;color:var(--text-muted);margin-top:2px;}
+.quiz-lang-toggle{display:flex;gap:5px;}
+.qlang-btn{padding:5px 11px;border-radius:100px;border:1.5px solid rgba(255,107,26,.38);background:transparent;color:var(--text-muted);font-size:.73rem;font-weight:700;cursor:pointer;transition:all .17s;font-family:'Space Grotesk',sans-serif;}
+.qlang-btn.active{background:linear-gradient(135deg,var(--fox-orange),var(--neon-purple));border-color:transparent;color:#fff;box-shadow:0 0 14px rgba(255,107,26,.38);}
+.quiz-lives{display:flex;gap:3px;font-size:1.2rem;}
+.quiz-xp-box{background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.22);padding:5px 12px;border-radius:100px;font-size:.78rem;font-family:'Orbitron',sans-serif;font-weight:700;color:var(--fox-gold);box-shadow:0 0 12px rgba(255,215,0,.13);}
+.quiz-progress-wrap{padding:0;}
+.quiz-progress-bar{height:3px;background:rgba(255,255,255,.06);}
+.quiz-progress-fill{height:100%;background:linear-gradient(90deg,var(--fox-orange),var(--neon-purple));transition:width .5s ease;width:0%;box-shadow:0 0 10px rgba(255,107,26,.5);}
+.quiz-body{padding:28px;flex:1;overflow-y:auto;}
+.q-counter{font-size:.68rem;color:var(--fox-orange);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px;font-family:'Orbitron',sans-serif;}
+.q-text{font-size:1.05rem;font-weight:600;line-height:1.55;color:var(--text-main);margin-bottom:20px;}
+.options-grid{display:flex;flex-direction:column;gap:9px;margin-bottom:16px;}
+.opt-btn{display:flex;align-items:center;gap:13px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:13px;padding:13px 17px;color:var(--text-main);font-size:.86rem;cursor:pointer;transition:all .2s;text-align:left;font-family:'Space Grotesk',sans-serif;width:100%;}
+.opt-btn:hover:not(:disabled){background:rgba(255,107,26,.09);border-color:rgba(255,107,26,.38);transform:translateX(4px);box-shadow:0 0 18px rgba(255,107,26,.09);}
+.opt-btn.correct{background:rgba(57,255,20,.09);border-color:var(--neon-green);color:#b3ffa0;box-shadow:0 0 18px rgba(57,255,20,.13);animation:correctPop .4s ease;}
+.opt-btn.wrong{background:rgba(255,0,153,.09);border-color:var(--neon-pink);color:#ffb3d9;animation:wrongWiggle .4s ease;}
+@keyframes correctPop{0%{transform:scale(1)}50%{transform:scale(1.02)}100%{transform:scale(1)}}
+@keyframes wrongWiggle{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.opt-letter{width:27px;height:27px;border-radius:8px;background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75rem;flex-shrink:0;font-family:'Orbitron',sans-serif;color:var(--fox-orange);}
+.feedback-box{background:rgba(191,95,255,.07);border:1px solid rgba(191,95,255,.22);border-radius:13px;padding:13px 17px;font-size:.82rem;color:#D4ADFF;line-height:1.65;margin-bottom:14px;animation:slideUp .3s ease both;display:none;}
+.feedback-box.correct{background:rgba(57,255,20,.07);border-color:rgba(57,255,20,.2);color:#b3ffa0;}
+.feedback-box.wrong{background:rgba(255,0,153,.07);border-color:rgba(255,0,153,.2);color:#ffb3d9;}
+.next-quiz-btn{display:none;width:100%;padding:13px;border-radius:13px;border:none;background:linear-gradient(135deg,var(--fox-orange),var(--neon-purple));color:#fff;font-size:.9rem;font-weight:700;cursor:pointer;font-family:'Space Grotesk',sans-serif;letter-spacing:.04em;transition:all .2s;box-shadow:0 0 22px rgba(255,107,26,.32);text-transform:uppercase;}
+.next-quiz-btn:hover{transform:translateY(-2px);box-shadow:0 0 38px rgba(255,107,26,.52);}
+
+/* Result */
+.result-screen-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;text-align:center;padding:40px;}
+.result-trophy{font-size:5rem;margin-bottom:12px;animation:foxBounce 1.6s ease-in-out infinite;filter:drop-shadow(0 0 18px rgba(255,215,0,.5));}
+.result-title{font-family:'Orbitron',sans-serif;font-size:1.6rem;font-weight:700;background:linear-gradient(100deg,var(--fox-orange),var(--fox-gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:7px;}
+.result-score{font-family:'Orbitron',sans-serif;font-size:2.8rem;color:var(--fox-amber);margin:12px 0;}
+.result-xp{display:inline-block;padding:7px 18px;background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.25);border-radius:100px;color:var(--fox-gold);font-family:'Orbitron',sans-serif;font-size:.9rem;margin:10px 0;}
+.result-badge{font-size:1.3rem;padding:14px 28px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:14px;margin:18px 0;font-family:'Orbitron',sans-serif;font-weight:700;color:var(--fox-amber);}
+.result-sub{color:var(--text-muted);font-size:.82rem;margin:7px 0 16px;}
+.result-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;justify-content:center;}
+.gameover-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;text-align:center;padding:40px;}
+#save-status{color:var(--neon-green);font-size:.8rem;margin:8px 0;}
+
+/* ── SYLLABUS ── */
+#view-syllabus{padding:32px;}
+.syllabus-section{margin-bottom:36px;}
+.syllabus-section-title{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:700;margin-bottom:16px;padding:11px 18px;border-radius:12px;display:flex;align-items:center;gap:10px;}
+.syl-beginner{background:rgba(57,255,20,.07);border:1px solid rgba(57,255,20,.2);color:var(--neon-green);}
+.syl-intermediate{background:rgba(255,215,0,.07);border:1px solid rgba(255,215,0,.2);color:var(--fox-gold);}
+.syl-advanced{background:rgba(255,107,26,.07);border:1px solid rgba(255,107,26,.2);color:var(--fox-orange);}
+.syl-expert{background:rgba(191,95,255,.07);border:1px solid rgba(191,95,255,.2);color:var(--neon-purple);}
+.syl-bonus{background:rgba(0,245,255,.07);border:1px solid rgba(0,245,255,.2);color:var(--neon-cyan);}
+.syl-topics-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:13px;}
+.syl-topic-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:17px;transition:all .3s;}
+.syl-topic-card:hover{border-color:rgba(255,107,26,.3);transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,.25);}
+.syl-topic-num{font-family:'Orbitron',sans-serif;font-size:.65rem;color:var(--fox-orange);margin-bottom:6px;letter-spacing:.05em;}
+.syl-topic-name{font-weight:700;font-size:.9rem;margin-bottom:9px;color:var(--text-main);}
+.syl-subtopics{list-style:none;}
+.syl-subtopics li{font-size:.75rem;color:var(--text-muted);padding:3px 0;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:6px;}
+.syl-subtopics li::before{content:'›';color:var(--fox-orange);}
+.syl-subtopics li:last-child{border-bottom:none;}
+
+/* ── DIFF / LANG PILLS ── */
+.diff-pill{display:inline-block;padding:3px 9px;border-radius:100px;font-size:.65rem;font-weight:700;letter-spacing:.05em;}
+.diff-beginner{background:rgba(57,255,20,.12);color:var(--neon-green);}
+.diff-intermediate{background:rgba(255,215,0,.12);color:var(--fox-gold);}
+.diff-advanced{background:rgba(255,107,26,.12);color:var(--fox-orange);}
+.diff-expert{background:rgba(191,95,255,.12);color:var(--neon-purple);}
+
+/* Bias game banner */
+.bias-game-banner{display:flex;align-items:center;gap:15px;background:linear-gradient(135deg,rgba(255,215,0,.07),rgba(255,107,26,.07));border:1px solid rgba(255,215,0,.22);border-radius:20px;padding:18px;cursor:pointer;transition:all .25s;margin-top:22px;}
+.bias-game-banner:hover{transform:translateY(-4px);border-color:var(--fox-gold);box-shadow:0 9px 32px rgba(0,0,0,.3),0 0 28px rgba(255,215,0,.1);}
+.bias-game-icon{font-size:2.2rem;flex-shrink:0;filter:drop-shadow(0 0 10px rgba(255,215,0,.5));}
+.bias-game-title{font-family:'Orbitron',sans-serif;font-size:.88rem;font-weight:700;color:var(--fox-gold);}
+.bias-game-sub{font-size:.73rem;color:var(--text-muted);margin-top:3px;}
+
+/* ── TOAST ── */
+.toast,#toast{position:fixed;bottom:24px;right:24px;z-index:9999;padding:12px 18px;border-radius:12px;background:rgba(7,7,15,.96);border:1px solid var(--fox-orange);font-size:.82rem;font-weight:600;display:flex;align-items:center;gap:10px;transform:translateY(80px);opacity:0;transition:all .3s;pointer-events:none;box-shadow:0 0 28px rgba(255,107,26,.28),0 8px 28px rgba(0,0,0,.4);backdrop-filter:blur(20px);color:var(--text-main);}
+.toast.show,#toast.show{transform:translateY(0);opacity:1;}
+.toast.success,#toast.success{border-color:var(--neon-green);box-shadow:0 0 28px rgba(57,255,20,.28);}
+.toast.error,#toast.error{border-color:var(--neon-pink);box-shadow:0 0 28px rgba(255,0,153,.28);}
+#toast-container{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:99999;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
+
+/* ── TOOLTIP ── */
+[data-tip]{position:relative;}
+[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100%+6px);left:50%;transform:translateX(-50%);background:rgba(7,7,15,.96);border:1px solid rgba(255,255,255,.1);padding:5px 10px;border-radius:7px;font-size:.7rem;white-space:nowrap;pointer-events:none;z-index:100;color:var(--text-main);}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(255,107,26,.25);border-radius:100px;}
+::-webkit-scrollbar-thumb:hover{background:var(--fox-orange);}
+
+/* ── NAV ANIMATION ── */
+@keyframes navPop{0%{transform:scale(.95);}50%{transform:scale(1.02);}100%{transform:scale(1);}}
+.nav-item.active{animation:navPop .3s ease;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .progress-overview{grid-template-columns:repeat(2,1fr);}
+  .sidebar{display:none;position:fixed;left:0;top:0;bottom:0;z-index:200;}
+  .sidebar.open{display:flex;}
+  .mob-toggle{display:flex;}
+  #view-dashboard{padding:18px;}
+}
+@media(max-width:768px){
+  .sidebar{position:fixed;left:-280px;z-index:200;transition:left .3s;height:100%;top:0;display:flex;}
+  .sidebar.open{left:0;}
+  .mob-toggle{display:flex;}
+  .main-content{height:calc(100vh - 48px);}
+  .fact-grid{grid-template-columns:1fr;}
+  .levels-grid{grid-template-columns:1fr;}
+  .result-actions{flex-direction:column;}
+  .chat-area{padding:16px;}
+  .chat-footer{padding:14px 16px;}
+  #view-dashboard{padding:16px;}
+  .quiz-body{padding:16px;}
+  .quiz-topbar{padding:12px 14px;}
+}
+@media(max-width:600px){
+  .progress-overview{grid-template-columns:1fr 1fr;}
+  .levels-grid{grid-template-columns:1fr;}
+  .q-text{font-size:.95rem;}
+}
+</style>
+</head>
+<body>
+
+<canvas id="particle-canvas"></canvas>
+<div id="fox-cursor-wrap">
+  <svg id="fox-cursor-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <style>
+      #fox-body { animation: foxRun 0.35s steps(1) infinite; }
+      @keyframes foxRun { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
+      #fox-tail { transform-origin:20px 55px; animation:tailWag 0.4s ease-in-out infinite alternate; }
+      @keyframes tailWag { from{transform:rotate(-18deg)} to{transform:rotate(12deg)} }
+      #leg-fr { transform-origin:58px 72px; animation:legFR 0.35s ease-in-out infinite alternate; }
+      #leg-fl { transform-origin:48px 72px; animation:legFL 0.35s ease-in-out infinite alternate; }
+      #leg-rr { transform-origin:32px 72px; animation:legRR 0.35s ease-in-out infinite alternate; }
+      #leg-rl { transform-origin:22px 72px; animation:legRL 0.35s ease-in-out infinite alternate; }
+      @keyframes legFR { from{transform:rotate(-25deg)} to{transform:rotate(20deg)} }
+      @keyframes legFL { from{transform:rotate(20deg)} to{transform:rotate(-25deg)} }
+      @keyframes legRR { from{transform:rotate(20deg)} to{transform:rotate(-25deg)} }
+      @keyframes legRL { from{transform:rotate(-25deg)} to{transform:rotate(20deg)} }
+    </style>
+    <g id="fox-body">
+      <g id="fox-tail">
+        <ellipse cx="16" cy="52" rx="13" ry="7" transform="rotate(-35 16 52)" fill="#FF8C42"/>
+        <ellipse cx="9" cy="44" rx="6" ry="4" transform="rotate(-35 9 44)" fill="#fff"/>
+      </g>
+      <ellipse cx="50" cy="62" rx="28" ry="16" fill="#FF6B1A"/>
+      <circle cx="72" cy="46" r="18" fill="#FF6B1A"/>
+      <polygon points="60,33 55,16 68,30" fill="#FF6B1A"/>
+      <polygon points="82,30 88,14 78,30" fill="#FF6B1A"/>
+      <polygon points="61,31 57,20 67,30" fill="#FF2060"/>
+      <polygon points="81,29 86,18 78,29" fill="#FF2060"/>
+      <ellipse cx="77" cy="52" rx="9" ry="6" fill="#FFD5B0"/>
+      <circle cx="68" cy="43" r="3.5" fill="#111"/>
+      <circle cx="76" cy="43" r="3.5" fill="#111"/>
+      <circle cx="69.2" cy="42" r="1.2" fill="#fff"/>
+      <circle cx="77.2" cy="42" r="1.2" fill="#fff"/>
+      <ellipse cx="80" cy="50" rx="2.5" ry="1.8" fill="#333"/>
+      <path d="M78 52 Q80 54 82 52" stroke="#555" stroke-width="1" fill="none"/>
+      <rect id="leg-fr" x="55" y="72" width="7" height="18" rx="3.5" fill="#FF6B1A"/>
+      <rect id="leg-fl" x="44" y="72" width="7" height="18" rx="3.5" fill="#e05a10"/>
+      <rect id="leg-rr" x="28" y="72" width="7" height="18" rx="3.5" fill="#FF6B1A"/>
+      <rect id="leg-rl" x="17" y="72" width="7" height="18" rx="3.5" fill="#e05a10"/>
+      <ellipse cx="50" cy="65" rx="16" ry="8" fill="#FFD5B0" opacity="0.6"/>
+    </g>
+  </svg>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ========== SPLASH ========== -->
+<div class="screen active" id="splash-screen">
+  <!-- Language Toggle -->
+  <div class="lang-toggle-bar">
+    <button class="lang-btn active" id="btn-en" onclick="setLang('en')">English</button>
+    <button class="lang-btn" id="btn-ta" onclick="setLang('ta')">தமிழ்</button>
+  </div>
+  <div class="splash-inner dyk-inner">
+    <div class="dyk-warning-icon">⚠️</div>
+    <h1 class="dyk-title" data-en="Did You Know?" data-ta="உங்களுக்கு தெரியுமா?">Did You Know?</h1>
+    <div class="dyk-cards">
+      <div class="dyk-card">
+        <span class="dyk-stat">1 Billion+</span>
+        <span class="dyk-desc" data-en="people are affected by biased AI decisions every year" data-ta="ஒவ்வோர் ஆண்டும் சார்புடைய AI முடிவுகளால் பாதிக்கப்படுகின்றனர்">people are affected by biased AI decisions every year</span>
+      </div>
+      <div class="dyk-card">
+        <span class="dyk-stat dyk-stat-yellow">85%</span>
+        <span class="dyk-desc" data-en="of school students in India have never learned about AI ethics" data-ta="இந்தியாவில் பள்ளி மாணவர்களில் AI நெறிமுறைகளைப் பற்றி கற்றதில்லை">of school students in India have never learned about AI ethics</span>
+      </div>
+      <div class="dyk-card">
+        <span class="dyk-stat dyk-stat-blue">500M+</span>
+        <span class="dyk-desc" data-en="deepfake videos were shared online in 2023 to mislead people" data-ta="2023-ல் மக்களை தவறாக வழிநடத்த டீப்ஃபேக் வீடியோக்கள் பகிரப்பட்டன">deepfake videos were shared online in 2023 to mislead people</span>
+      </div>
+    </div>
+    <p class="dyk-tagline" data-en="AI is shaping your world — but are you ready to use it responsibly?" data-ta="AI உங்கள் உலகை வடிவமைக்கிறது — நீங்கள் பொறுப்புடன் பயன்படுத்த தயாரா?">AI is shaping your world — but are you ready to use it responsibly?</p>
+    <button class="cta-btn dyk-cta" onclick="showLogin()">
+      <span data-en="I Want to Learn →" data-ta="நான் கற்க விரும்புகிறேன் →">I Want to Learn →</span>
+    </button>
+  </div>
+</div>
+
+<!-- ========== LOGIN ========== -->
+<div class="screen" id="login-screen" style="align-items:center;justify-content:center;flex-direction:column;">
+  <div class="login-card">
+    <span class="login-fox">🦊</span>
+    <div class="login-title" data-en="Welcome to EthicaLearn" data-ta="EthicaLearn-க்கு வரவேற்கிறோம்">Welcome to EthicaLearn</div>
+    <div class="login-sub" data-en="Your AI-powered path to mastering Artificial Intelligence" data-ta="செயற்கை நுண்ணறிவை கற்க உங்கள் AI வழிகாட்டி">Your AI-powered path to mastering Artificial Intelligence</div>
+    <input class="fox-input" id="inp-email" type="email" placeholder="Your email address..." maxlength="80" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <input class="fox-input" id="inp-name" type="text" placeholder="Your name..." maxlength="40" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <input class="fox-input" id="inp-class" type="text" placeholder="Your class / grade (optional)..." maxlength="30" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <button class="cta-btn" style="width:100%;justify-content:center;margin-top:8px;" onclick="doLogin()">
+      <span data-en="Enter the Fox Den 🦊 ›" data-ta="கற்றலை தொடங்குங்கள் 🦊 ›">Enter the Fox Den 🦊 ›</span>
+    </button>
+  </div>
+</div>
+
+<!-- ========== HOME (SIDEBAR + CONTENT) ========== -->
+<div class="screen" id="home-screen">
+
+  <!-- MOBILE TOP BAR -->
+  <div class="mob-toggle" id="mob-topbar">
+    <button class="hamburger-btn" onclick="toggleSidebar()">☰</button>
+    <span style="font-family:'Orbitron',sans-serif;font-weight:700;font-size:.9rem;">🦊 FoxLearn</span>
+    <span id="mob-xp" style="margin-left:auto;font-family:'Orbitron',monospace;color:var(--fox-amber);font-size:0.78rem;">0 XP</span>
+  </div>
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-icon">🦊</span>
+      <div class="logo-text">Fox<span>Learn</span> AI</div>
+    </div>
+    <div class="user-panel">
+      <div class="user-name" id="sb-name">—</div>
+      <div class="user-class" id="sb-class">—</div>
+      <div class="xp-bar-wrap">
+        <div class="xp-label"><span>XP Progress</span><span id="sb-xp">0</span></div>
+        <div class="xp-bar"><div class="xp-fill" id="sb-xp-fill" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-val" id="sb-lvl">0</div><div class="stat-key">Levels Done</div></div>
+      <div class="stat-box"><div class="stat-val" id="sb-streak">0</div><div class="stat-key">Day Streak</div></div>
+    </div>
+    <div class="nav-section">Navigation</div>
+    <div class="nav-item active" id="nav-dashboard" onclick="showView('dashboard')"><span class="nav-icon">🏠</span>Dashboard</div>
+    <div class="nav-item" id="nav-tutor" onclick="showView('tutor')"><span class="nav-icon">🤖</span>AI Tutor Chat</div>
+    <div class="nav-item" id="nav-syllabus" onclick="showView('syllabus')"><span class="nav-icon">📚</span>Full Syllabus</div>
+    <div class="nav-section">Levels</div>
+    <div class="nav-item" id="nav-lv1" onclick="launchQuiz(1)"><span class="nav-icon">1️⃣</span>Intro to AI & ML<span class="level-badge badge-beginner">BEGINNER</span></div>
+    <div class="nav-item" id="nav-lv2" onclick="launchQuiz(2)"><span class="nav-icon">2️⃣</span>Python for AI<span class="level-badge badge-beginner">BEGINNER</span></div>
+    <div class="nav-item" id="nav-lv3" onclick="launchQuiz(3)"><span class="nav-icon">3️⃣</span>Math for AI<span class="level-badge badge-beginner">BEGINNER</span></div>
+    <div class="nav-item" id="nav-lv4" onclick="launchQuiz(4)"><span class="nav-icon">4️⃣</span>Data Basics<span class="level-badge badge-beginner">BEGINNER</span></div>
+    <div class="nav-item" id="nav-lv5" onclick="launchQuiz(5)"><span class="nav-icon">5️⃣</span>Data Preprocessing<span class="level-badge badge-intermediate">INTER</span></div>
+    <div class="nav-item" id="nav-lv6" onclick="launchQuiz(6)"><span class="nav-icon">6️⃣</span>EDA<span class="level-badge badge-intermediate">INTER</span></div>
+    <div class="nav-item" id="nav-lv7" onclick="launchQuiz(7)"><span class="nav-icon">7️⃣</span>Supervised ML<span class="level-badge badge-intermediate">INTER</span></div>
+    <div class="nav-item" id="nav-lv8" onclick="launchQuiz(8)"><span class="nav-icon">8️⃣</span>Unsupervised ML<span class="level-badge badge-intermediate">INTER</span></div>
+    <div class="nav-item" id="nav-lv9" onclick="launchQuiz(9)"><span class="nav-icon">9️⃣</span>Feature Eng.<span class="level-badge badge-intermediate">INTER</span></div>
+    <div class="nav-item" id="nav-lv10" onclick="launchQuiz(10)"><span class="nav-icon">🔟</span>Deep Learning<span class="level-badge badge-advanced">ADV</span></div>
+    <div class="nav-item" id="nav-lv11" onclick="launchQuiz(11)"><span class="nav-icon">👁️</span>Computer Vision<span class="level-badge badge-advanced">ADV</span></div>
+    <div class="nav-item" id="nav-lv12" onclick="launchQuiz(12)"><span class="nav-icon">💬</span>NLP<span class="level-badge badge-advanced">ADV</span></div>
+    <div class="nav-item" id="nav-lv13" onclick="launchQuiz(13)"><span class="nav-icon">🎮</span>Reinforcement RL<span class="level-badge badge-advanced">ADV</span></div>
+    <div class="nav-item" id="nav-lv14" onclick="launchQuiz(14)"><span class="nav-icon">✨</span>Generative AI<span class="level-badge badge-expert">EXPERT</span></div>
+    <div class="nav-item" id="nav-lv15" onclick="launchQuiz(15)"><span class="nav-icon">🚀</span>MLOps<span class="level-badge badge-expert">EXPERT</span></div>
+    <div class="nav-item" id="nav-lv16" onclick="launchQuiz(16)"><span class="nav-icon">⚖️</span>AI Ethics<span class="level-badge badge-expert">EXPERT</span></div>
+    <div class="nav-item" id="nav-lv17" onclick="launchQuiz(17)"><span class="nav-icon">🏗️</span>Capstone<span class="level-badge badge-expert">EXPERT</span></div>
+    <div class="sidebar-footer">
+      <button class="fox-btn-sm" onclick="doLogout()">🚪 Logout</button>
+      <button class="fox-btn-sm" onclick="showView('tutor')">🤖 Ask Tutor</button>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content" id="main-content">
+
+    <!-- DASHBOARD VIEW -->
+    <div id="view-dashboard" style="padding:32px;display:block;">
+      <div class="dash-header">
+        <div class="dash-greeting">Welcome back, <span id="dash-name">Learner</span>! 🦊</div>
+        <div class="dash-sub">Continue your AI journey — your fox tutor is ready to help anytime.</div>
+      </div>
+      <div class="progress-overview" id="progress-overview">
+        <div class="prog-card" style="--color:var(--fox-orange)">
+          <div class="prog-card-icon">⚡</div>
+          <div class="prog-card-val" id="pd-xp">0</div>
+          <div class="prog-card-label">Total XP Earned</div>
+          <div class="prog-bar"><div class="prog-bar-fill" id="pd-xp-bar" style="width:0%;background:linear-gradient(90deg,var(--fox-deep),var(--fox-amber))"></div></div>
+        </div>
+        <div class="prog-card" style="--color:#4CAF50">
+          <div class="prog-card-icon">🏆</div>
+          <div class="prog-card-val" id="pd-done">0/17</div>
+          <div class="prog-card-label">Levels Completed</div>
+          <div class="prog-bar"><div class="prog-bar-fill" id="pd-done-bar" style="width:0%;background:linear-gradient(90deg,#2E7D32,#4CAF50)"></div></div>
+        </div>
+        <div class="prog-card" style="--color:#2196F3">
+          <div class="prog-card-icon">🧠</div>
+          <div class="prog-card-val" id="pd-correct">0%</div>
+          <div class="prog-card-label">Avg. Accuracy</div>
+          <div class="prog-bar"><div class="prog-bar-fill" id="pd-acc-bar" style="width:0%;background:linear-gradient(90deg,#1565C0,#2196F3)"></div></div>
+        </div>
+        <div class="prog-card" style="--color:#9C27B0">
+          <div class="prog-card-icon">🔥</div>
+          <div class="prog-card-val" id="pd-streak">0</div>
+          <div class="prog-card-label">Day Streak</div>
+          <div class="prog-bar"><div class="prog-bar-fill" id="pd-streak-bar" style="width:10%;background:linear-gradient(90deg,#6A1B9A,#9C27B0)"></div></div>
+        </div>
+      </div>
+
+      <div class="section-heading">🌱 Beginner Level</div>
+      <div class="levels-grid" id="levels-grid-beginner"></div>
+      <div class="section-heading">🔥 Intermediate Level</div>
+      <div class="levels-grid" id="levels-grid-intermediate"></div>
+      <div class="section-heading">⚡ Advanced Level</div>
+      <div class="levels-grid" id="levels-grid-advanced"></div>
+      <div class="section-heading">🚀 Expert Level</div>
+      <div class="levels-grid" id="levels-grid-expert"></div>
+    </div>
+
+    <!-- TUTOR CHAT VIEW -->
+    <div id="view-tutor" style="display:none;">
+      <div class="tutor-header">
+        <div class="tutor-fox">🦊</div>
+        <div class="tutor-info">
+          <div class="tutor-name">Fox — Your AI Tutor</div>
+          <div class="tutor-status">Online • Ready to teach anything</div>
+        </div>
+        <select class="tutor-context-select" id="tutor-context">
+          <option value="">📚 Ask anything...</option>
+          <option value="Intro to AI & ML">1. Intro to AI & ML</option>
+          <option value="Python for AI">2. Python for AI</option>
+          <option value="Math for AI">3. Math for AI</option>
+          <option value="Data Basics">4. Data Basics</option>
+          <option value="Data Preprocessing">5. Data Preprocessing</option>
+          <option value="EDA">6. EDA</option>
+          <option value="Supervised ML">7. Supervised ML</option>
+          <option value="Unsupervised ML">8. Unsupervised ML</option>
+          <option value="Feature Engineering">9. Feature Engineering</option>
+          <option value="Deep Learning">10. Deep Learning</option>
+          <option value="Computer Vision">11. Computer Vision</option>
+          <option value="NLP">12. NLP</option>
+          <option value="Reinforcement Learning">13. Reinforcement Learning</option>
+          <option value="Generative AI">14. Generative AI</option>
+          <option value="MLOps">15. MLOps</option>
+          <option value="AI Ethics">16. AI Ethics</option>
+          <option value="Capstone Projects">17. Capstone Projects</option>
+        </select>
+      </div>
+      <div class="chat-area" id="chat-area"></div>
+      <div class="chat-footer">
+        <div class="quick-prompts" id="quick-prompts">
+          <button class="qp-btn" onclick="sendQuick('What is Machine Learning? Explain with examples.')">What is ML?</button>
+          <button class="qp-btn" onclick="sendQuick('Explain the difference between supervised and unsupervised learning.')">Supervised vs Unsupervised</button>
+          <button class="qp-btn" onclick="sendQuick('How do neural networks work? Simple explanation please.')">Neural Networks</button>
+          <button class="qp-btn" onclick="sendQuick('What is gradient descent and how does it work?')">Gradient Descent</button>
+          <button class="qp-btn" onclick="sendQuick('Explain transformers and attention mechanism in NLP.')">Transformers</button>
+          <button class="qp-btn" onclick="sendQuick('What is RAG (Retrieval Augmented Generation)?')">RAG</button>
+          <button class="qp-btn" onclick="sendQuick('How do I start a career in AI/ML? Step by step guide.')">AI Career Path</button>
+          <button class="qp-btn" onclick="sendQuick('Write a simple Python code for linear regression.')">Python Example</button>
+        </div>
+        <div class="chat-input-row">
+          <textarea class="chat-input" id="chat-input" placeholder="Ask anything about AI, ML, Deep Learning, Python..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}"></textarea>
+          <button class="send-btn" id="send-btn" onclick="sendChat()">➤</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SYLLABUS VIEW -->
+    <div id="view-syllabus" style="display:none;padding:32px;">
+      <div class="dash-header" style="margin-bottom:32px;">
+        <div class="dash-greeting">Full <span>Syllabus</span> 📚</div>
+        <div class="dash-sub">17 modules covering the complete AI & ML learning path</div>
+      </div>
+      <div id="syllabus-content"></div>
+    </div>
+
+    <!-- QUIZ VIEW -->
+    <div id="view-quiz" style="display:none;flex-direction:column;">
+      <div class="quiz-topbar">
+        <button onclick="exitQuiz()" style="background:transparent;border:1px solid var(--dark-border);color:var(--text-muted);padding:7px 14px;border-radius:8px;font-size:0.85rem;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--fox-orange)';this.style.color='var(--fox-orange)'" onmouseout="this.style.borderColor='var(--dark-border)';this.style.color='var(--text-muted)'">← Back</button>
+        <div class="quiz-level-info">
+          <div class="quiz-level-name" id="qlvl-name">—</div>
+          <div class="quiz-level-diff" id="qlvl-diff">—</div>
+        </div>
+        <div class="quiz-lang-toggle">
+          <button class="qlang-btn active" id="qlang-en" onclick="switchQuizLang('en')">EN</button>
+          <button class="qlang-btn" id="qlang-ta" onclick="switchQuizLang('ta')">தமிழ்</button>
+        </div>
+        <div class="quiz-lives" id="quiz-lives">❤️❤️❤️</div>
+        <div class="quiz-xp-box">⚡ <span id="quiz-xp">0</span> XP</div>
+      </div>
+      <div class="quiz-progress-wrap">
+        <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quiz-prog" style="width:0%"></div></div>
+      </div>
+      <div class="quiz-body" id="quiz-body" style="flex:1;overflow-y:auto;padding:28px;">
+        <!-- dynamically filled -->
+      </div>
+    </div>
+
+  </div><!-- end main-content -->
+</div><!-- end home-screen -->
+
+<script>
+// ====== CURSOR (running fox — matches teacher dashboard) ======
+(function(){
+  const wrap = document.getElementById('fox-cursor-wrap');
+  if(!wrap) return;
+  let mx=window.innerWidth/2, my=window.innerHeight/2;
+  let cx=mx, cy=my, lastX=mx, lastY=my, trailTimer=0, pawTimer=0;
+  document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
+  function lerp(a,b,t){ return a+(b-a)*t; }
+  function loop(){
+    cx = lerp(cx, mx, 0.18); cy = lerp(cy, my, 0.18);
+    wrap.style.left = cx+'px'; wrap.style.top = cy+'px';
+    const dx=mx-lastX, dy=my-lastY, speed=Math.sqrt(dx*dx+dy*dy);
+    if(speed>1){ const svg=document.getElementById('fox-cursor-svg'); if(svg){if(dx<-5)svg.style.transform='scaleX(-1)';else if(dx>5)svg.style.transform='scaleX(1)';} }
+    if(speed>4){
+      trailTimer++;
+      if(trailTimer%3===0){ const t=document.createElement('div'); t.className='fox-cursor-trail'; const sz=4+Math.random()*5; t.style.cssText=`left:${lastX}px;top:${lastY}px;width:${sz}px;height:${sz}px;background:radial-gradient(circle,rgba(255,107,26,.8),transparent)`; document.body.appendChild(t); setTimeout(()=>t.remove(),600); }
+      pawTimer++;
+      if(pawTimer%18===0){ const p=document.createElement('div'); p.className='fox-paw'; p.textContent='🐾'; p.style.cssText=`left:${lastX}px;top:${lastY}px;`; document.body.appendChild(p); setTimeout(()=>p.remove(),900); }
+    }
+    lastX=mx; lastY=my; requestAnimationFrame(loop);
+  }
+  loop();
+  // Particle system
+  const canvas=document.getElementById('particle-canvas');
+  if(canvas){ const ctx=canvas.getContext('2d'); let W,H,particles=[]; function resize(){ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; } resize(); window.addEventListener('resize',resize); for(let i=0;i<55;i++) particles.push(mkP()); function mkP(){ return{x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,r:Math.random()*1.8+0.4,vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28,a:Math.random()*.5+.1,c:Math.random()<.5?'255,107,26':Math.random()<.5?'191,95,255':'0,245,255'}; } function drawParticles(){ ctx.clearRect(0,0,W,H); particles.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; if(p.x<0||p.x>W)p.vx*=-1; if(p.y<0||p.y>H)p.vy*=-1; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle=`rgba(${p.c},${p.a})`; ctx.fill(); }); for(let i=0;i<particles.length;i++){ for(let j=i+1;j<particles.length;j++){ const dx=particles[i].x-particles[j].x; const dy=particles[i].y-particles[j].y; const dist=Math.sqrt(dx*dx+dy*dy); if(dist<130){ ctx.beginPath(); ctx.moveTo(particles[i].x,particles[i].y); ctx.lineTo(particles[j].x,particles[j].y); ctx.strokeStyle=`rgba(191,95,255,${(1-dist/130)*.08})`; ctx.lineWidth=.6; ctx.stroke(); } } } requestAnimationFrame(drawParticles); } drawParticles(); }
+})();
+
+// ====== STATE ======
+let state={
+  name:'',email:'',cls:'',xp:0,lvlsDone:0,streak:0,
+  completed:{},totalAns:0,totalCorrect:0,
+  chatHistory:[]
+};
+
+// ====== TOAST ======
+function toast(msg,type='success'){
+  const t=document.getElementById('toast');
+  t.textContent=(type==='success'?'✅ ':'❌ ')+msg;
+  t.className='toast show '+(type==='success'?'success':'error');
+  setTimeout(()=>t.className='toast',3000);
+}
+
+// ====== SCREENS ======
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function showLogin(){showScreen('login-screen');}
+function doLogin(){
+  const e=document.getElementById('inp-email').value.trim();
+  const n=document.getElementById('inp-name').value.trim();
+  if(!e){toast('Please enter your email!','error');return;}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){toast('Please enter a valid email!','error');return;}
+  if(!n){toast('Please enter your name!','error');return;}
+  const storageKey='foxlearn_'+e.toLowerCase();
+  const saved=localStorage.getItem(storageKey);
+  if(saved){
+    try{
+      const parsed=JSON.parse(saved);
+      state=parsed;
+      state.email=e;
+      toast('Welcome back, '+state.name+'! Continuing your course 🦊','success');
+    }catch(err){
+      state.name=n;state.email=e;
+      state.cls=document.getElementById('inp-class').value.trim()||'AI Learner';
+    }
+  } else {
+    state.name=n;
+    state.email=e;
+    state.cls=document.getElementById('inp-class').value.trim()||'AI Learner';
+    state.xp=0;state.lvlsDone=0;state.streak=0;
+    state.completed={};state.totalAns=0;state.totalCorrect=0;state.chatHistory=[];
+  }
+  updateUI();
+  renderDashboard();
+  renderSyllabus();
+  initChat();
+  showScreen('home-screen');
+}
+function saveProgress(){
+  if(state.email){
+    const storageKey='foxlearn_'+state.email.toLowerCase();
+    localStorage.setItem(storageKey,JSON.stringify(state));
+  }
+}
+function doLogout(){
+  saveProgress();
+  state={name:'',email:'',cls:'',xp:0,lvlsDone:0,streak:0,completed:{},totalAns:0,totalCorrect:0,chatHistory:[]};
+  showScreen('login-screen');
+}
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+// ====== VIEWS ======
+function showView(v){
+  ['dashboard','tutor','syllabus','quiz'].forEach(id=>{
+    const el=document.getElementById('view-'+id);
+    if(el) el.style.display='none';
+  });
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const vEl=document.getElementById('view-'+v);
+  if(vEl) vEl.style.display=(v==='tutor'||v==='quiz')?'flex':'block';
+  const nEl=document.getElementById('nav-'+v);
+  if(nEl) nEl.classList.add('active');
+  if(window.innerWidth<=768) document.getElementById('sidebar').classList.remove('open');
+}
+
+// ====== SYLLABUS DATA ======
+const SYLLABUS=[
+  {id:1,name:'Introduction to AI & ML',level:'beginner',xp:80,topics:['What is AI?','Types of AI (ANI, AGI, ASI)','Machine Learning basics','Applications of AI in daily life','Industry use-cases','AI Ethics & Responsible AI']},
+  {id:2,name:'Python Foundations for AI',level:'beginner',xp:100,topics:['Python basics: variables, loops, functions','Lists, Tuples, Dictionaries, Sets','File handling','OOP: Classes, Objects, Inheritance','NumPy, Pandas, Matplotlib intro']},
+  {id:3,name:'Math for AI (Beginner)',level:'beginner',xp:100,topics:['Basic Algebra','Functions & Graphs','Matrix & Vectors (Basics)','Probability fundamentals','Descriptive statistics']},
+  {id:4,name:'Data Basics',level:'beginner',xp:80,topics:['What is data?','Data types','Structured vs Unstructured data','Data collection techniques','CSV, JSON formats']},
+  {id:5,name:'Data Handling & Preprocessing',level:'intermediate',xp:120,topics:['NumPy for numerical computing','Pandas for data manipulation','Handling missing values','Data cleaning','Outlier detection','Feature scaling','Encoding techniques']},
+  {id:6,name:'Exploratory Data Analysis (EDA)',level:'intermediate',xp:100,topics:['Data visualization (Matplotlib, Seaborn)','Correlation analysis','Statistical summary','Feature relationships & distributions']},
+  {id:7,name:'Supervised Machine Learning',level:'intermediate',xp:150,topics:['Linear & Logistic Regression','Decision Trees, Random Forest','KNN, SVM, Naïve Bayes','Gradient Boosting (XGBoost, LightGBM)','Bias vs Variance','Cross-validation','Performance metrics']},
+  {id:8,name:'Unsupervised Machine Learning',level:'intermediate',xp:130,topics:['Clustering (K-Means, Hierarchical, DBSCAN)','PCA (Dimensionality Reduction)','Association Rule Mining (Apriori)']},
+  {id:9,name:'Feature Engineering',level:'intermediate',xp:110,topics:['Creating new features','Feature selection techniques','PCA & LDA','Handling imbalance (SMOTE)']},
+  {id:10,name:'Neural Networks (Deep Learning Basics)',level:'advanced',xp:160,topics:['What is a neuron?','Activation functions (ReLU, Sigmoid, Softmax)','Loss functions','Gradient Descent & Backpropagation','ANN Architecture','TensorFlow / Keras / PyTorch']},
+  {id:11,name:'Computer Vision',level:'advanced',xp:170,topics:['CNN Basics (Convolution, Pooling)','Image classification','Transfer learning (VGG, ResNet, MobileNet)','Object detection (YOLO, SSD, Faster RCNN)','Image segmentation (U-Net, Mask RCNN)','OCR basics']},
+  {id:12,name:'Natural Language Processing (NLP)',level:'advanced',xp:180,topics:['Text preprocessing (tokenization, stemming)','Bag of Words, TF-IDF','Word Embeddings (Word2Vec, GloVe)','RNN, LSTM, GRU','Seq2Seq Models','Transformers (BERT, GPT family)']},
+  {id:13,name:'Reinforcement Learning',level:'advanced',xp:160,topics:['Markov Decision Process (MDP)','Q-learning','Deep Q Networks (DQN)','Policy Gradient Methods','Applications: Gaming, Robotics, Chatbots']},
+  {id:14,name:'Generative AI',level:'expert',xp:200,topics:['Introduction to GenAI','Prompt engineering','LLMs (GPT, LLaMA, Gemini)','Text generation & Chatbot creation','Fine-tuning LLMs','RAG (Retrieval Augmented Generation)','AI Agents']},
+  {id:15,name:'MLOps',level:'expert',xp:180,topics:['Model building → Deployment pipeline','Version control (Git, DVC)','Docker basics','CI/CD for ML','Flask, FastAPI, Streamlit','Cloud: AWS, GCP, Azure','Monitoring ML Models']},
+  {id:16,name:'AI Ethics & Safety',level:'expert',xp:160,topics:['Fairness, transparency & bias in AI','Explainable AI (XAI)','Data privacy','Responsible AI guidelines','Government & legal AI frameworks']},
+  {id:17,name:'Capstone Projects',level:'expert',xp:300,topics:['AI Chatbot','Emotion detection system','Fake news classifier','Face recognition system','Speech-to-text model','Product recommendation system','Medical diagnosis predictor']},
+];
+
+const LEVEL_COLORS={beginner:'#4CAF50',intermediate:'#2196F3',advanced:'#FF5722',expert:'#9C27B0',bonus:'#FF9800'};
+const LEVEL_EMOJIS={beginner:'🌱',intermediate:'🔥',advanced:'⚡',expert:'🚀',bonus:'🎁'};
+
+// ====== QUIZ DATA ======
+const QUIZ_DATA={
+  1:[
+    {q:"What does AI stand for?",opts:["Automated Internet","Artificial Intelligence","Advanced Input","Automated Information"],ans:1,exp:"AI stands for Artificial Intelligence — the simulation of human intelligence by machines."},
+    {q:"Which type of AI can perform ANY cognitive task a human can?",opts:["ANI","AGI","ASI","ML"],ans:1,exp:"AGI (Artificial General Intelligence) can perform any intellectual task that a human being can do."},
+    {q:"What is Machine Learning?",opts:["A robot building machines","AI that learns from data without explicit programming","Programming every rule manually","Hardware technology"],ans:1,exp:"Machine Learning is a subset of AI where systems learn from data and improve automatically without being explicitly programmed."},
+    {q:"Which of these is NOT an application of AI in daily life?",opts:["Google Maps traffic prediction","Netflix recommendations","A basic calculator","Siri voice assistant"],ans:2,exp:"A basic calculator performs fixed arithmetic operations — it doesn't learn or adapt, so it's not AI."},
+    {q:"Responsible AI focuses on:",opts:["Making AI as fast as possible","Fairness, transparency and accountability","Reducing AI cost","Making AI work offline"],ans:1,exp:"Responsible AI ensures that AI systems are fair, transparent, accountable, and do not cause harm."},
+  ],
+  2:[
+    {q:"What does 'def' keyword do in Python?",opts:["Defines a variable","Defines a function","Deletes a function","Declares a file"],ans:1,exp:"'def' is used to define (create) a function in Python."},
+    {q:"Which Python data structure stores key-value pairs?",opts:["List","Tuple","Dictionary","Set"],ans:2,exp:"Dictionary stores data as key-value pairs, e.g., {'name': 'Fox', 'age': 3}."},
+    {q:"Which library is used for numerical computing in Python AI?",opts:["Flask","NumPy","Django","SQLite"],ans:1,exp:"NumPy (Numerical Python) is the foundation for numerical computing in Python AI/ML."},
+    {q:"What is OOP in Python?",opts:["Online Operating Protocol","Object-Oriented Programming","Open Output Protocol","Object Operating Pipeline"],ans:1,exp:"OOP (Object-Oriented Programming) organizes code into classes and objects with inheritance, encapsulation, and polymorphism."},
+    {q:"Which library is used for data manipulation (DataFrames)?",opts:["NumPy","Matplotlib","Pandas","TensorFlow"],ans:2,exp:"Pandas is the primary Python library for data manipulation and analysis using DataFrame structures."},
+  ],
+  3:[
+    {q:"In matrix multiplication A×B, what must match?",opts:["Rows of A = Rows of B","Columns of A = Rows of B","Rows of A = Columns of B","All dimensions must match"],ans:1,exp:"For matrix multiplication A×B, the number of columns in A must equal the number of rows in B."},
+    {q:"What is a vector?",opts:["A 2D matrix","A 1D array of numbers with direction","A scalar value","A set of strings"],ans:1,exp:"A vector is a 1D array with both magnitude and direction, fundamental to ML for representing data points."},
+    {q:"Probability of an impossible event is:",opts:["1","0.5","0","-1"],ans:2,exp:"An impossible event has a probability of 0. All probabilities range from 0 to 1."},
+    {q:"What does the mean (average) measure?",opts:["The most frequent value","The middle value","The central tendency","The spread of data"],ans:2,exp:"Mean measures the central tendency — the average of all values in a dataset."},
+    {q:"What is a derivative used for in AI/ML?",opts:["Data storage","Finding the slope/rate of change to optimize models","Encryption","Loading data"],ans:1,exp:"Derivatives measure rate of change. In ML, they are used in gradient descent to minimize loss functions."},
+  ],
+  4:[
+    {q:"What is structured data?",opts:["Data in images","Organized data in rows and columns (tables)","Random text","Audio files"],ans:1,exp:"Structured data is organized into rows and columns (like spreadsheets/databases) and is easy to search and analyze."},
+    {q:"What format does CSV stand for?",opts:["Comma-Separated Values","Character String Variable","Computed Statistical View","Coded Syntax Value"],ans:0,exp:"CSV = Comma-Separated Values. It's a simple text format for storing tabular data with commas as delimiters."},
+    {q:"Which is an example of unstructured data?",opts:["A spreadsheet of sales","A database table","An email with text and images","A CSV file"],ans:2,exp:"Emails with text and images are unstructured data — no predefined format or schema."},
+    {q:"What is a dataset?",opts:["A single data point","A collection of organized data used for analysis/training","A programming language","A server"],ans:1,exp:"A dataset is a collection of organized data — rows and columns — used for analysis and training ML models."},
+    {q:"JSON stands for:",opts:["Java Source Object Notation","JavaScript Object Notation","Just String Operations Now","Java Standard Output Node"],ans:1,exp:"JSON (JavaScript Object Notation) is a lightweight data interchange format widely used in APIs and data storage."},
+  ],
+  5:[
+    {q:"What does feature scaling do?",opts:["Removes features","Normalizes feature values to a similar range","Adds more features","Deletes outliers"],ans:1,exp:"Feature scaling normalizes values so all features contribute equally to the model — preventing large-value features from dominating."},
+    {q:"What is One-Hot Encoding?",opts:["Encoding passwords","Converting categorical variables into binary columns","Hashing strings","Compressing data"],ans:1,exp:"One-Hot Encoding converts each category into a binary column (0 or 1), making categorical data usable by ML algorithms."},
+    {q:"How are missing values commonly handled?",opts:["Delete entire dataset","Imputation (mean/median/mode) or deletion","Ignore them","Replace with 999"],ans:1,exp:"Missing values are handled by imputation (filling with mean, median, mode) or by removing the rows/columns with missing data."},
+    {q:"What is Normalization in feature scaling?",opts:["Scaling values between 0 and 1","Standardizing to z-scores","Removing duplicates","Encoding categories"],ans:0,exp:"Normalization (Min-Max scaling) rescales values to the range [0, 1]."},
+    {q:"What is an outlier in data?",opts:["The most common value","A data point significantly different from others","The median value","A missing value"],ans:1,exp:"An outlier is a data point that lies far from other observations, which can distort statistical analysis and ML models."},
+  ],
+  6:[
+    {q:"What does EDA stand for?",opts:["Electronic Data Access","Exploratory Data Analysis","Enhanced Duplicate Aggregation","External Data Architecture"],ans:1,exp:"EDA = Exploratory Data Analysis — analyzing datasets to summarize their main characteristics, often using visual methods."},
+    {q:"Which library creates heatmaps for correlation in Python?",opts:["NumPy","Flask","Seaborn","PyTorch"],ans:2,exp:"Seaborn (built on Matplotlib) provides beautiful statistical visualizations including correlation heatmaps."},
+    {q:"What does a correlation value of +1 mean?",opts:["No correlation","Perfect negative correlation","Perfect positive correlation","Weak correlation"],ans:2,exp:"A correlation of +1 means a perfect positive linear relationship — when one variable increases, the other increases proportionally."},
+    {q:"A histogram is used to show:",opts:["Relationship between two variables","Distribution of a single variable","Categories over time","Map data"],ans:1,exp:"A histogram shows the frequency distribution of a single continuous variable, revealing its shape, skewness, and spread."},
+    {q:"What does a box plot show?",opts:["Only the mean","Median, quartiles, and outliers","Correlation between features","Time series data"],ans:1,exp:"A box plot (box-and-whisker plot) shows the median, quartiles (IQR), and outliers of a dataset distribution."},
+  ],
+  7:[
+    {q:"Linear Regression predicts:",opts:["Categories","Continuous numerical values","Clusters","Anomalies"],ans:1,exp:"Linear Regression predicts a continuous numerical output (e.g., house price, temperature) based on input features."},
+    {q:"In a Decision Tree, what is a 'leaf node'?",opts:["The root node","A split condition","A final prediction/outcome","A feature name"],ans:2,exp:"A leaf node in a decision tree represents the final prediction or class label — no further splitting occurs."},
+    {q:"What is overfitting?",opts:["Model is too simple for data","Model memorizes training data and fails on new data","Model underfits the data","Model has no errors"],ans:1,exp:"Overfitting occurs when a model learns training data too well (including noise), causing poor generalization to new data."},
+    {q:"What does F1-Score measure?",opts:["Only accuracy","Only recall","Harmonic mean of precision and recall","Training speed"],ans:2,exp:"F1-Score is the harmonic mean of Precision and Recall, useful for imbalanced classification problems."},
+    {q:"XGBoost is a type of:",opts:["Neural network","Support Vector Machine","Gradient Boosting algorithm","Clustering algorithm"],ans:2,exp:"XGBoost is an optimized Gradient Boosting algorithm — combines weak learners (trees) sequentially to reduce errors."},
+  ],
+  8:[
+    {q:"K-Means is a type of:",opts:["Supervised learning","Unsupervised clustering","Reinforcement learning","Transfer learning"],ans:1,exp:"K-Means is an unsupervised clustering algorithm that groups data points into K clusters based on similarity."},
+    {q:"What does PCA stand for?",opts:["Predictive Cluster Analysis","Principal Component Analysis","Pattern Classification Algorithm","Polynomial Curve Approximation"],ans:1,exp:"PCA (Principal Component Analysis) reduces the number of dimensions in data while preserving maximum variance."},
+    {q:"In K-Means, what does 'K' represent?",opts:["Number of features","Number of iterations","Number of clusters","Number of data points"],ans:2,exp:"K in K-Means represents the number of clusters you want the algorithm to form."},
+    {q:"DBSCAN is useful for:",opts:["Image classification","Finding clusters of arbitrary shape and detecting outliers","Linear regression","Text generation"],ans:1,exp:"DBSCAN (Density-Based Spatial Clustering) finds clusters of any shape and labels noise points as outliers."},
+    {q:"Apriori algorithm is used for:",opts:["Classification","Dimensionality reduction","Association Rule Mining (market basket analysis)","Image recognition"],ans:2,exp:"Apriori discovers association rules in transactional data (e.g., 'customers who buy X also buy Y')."},
+  ],
+  9:[
+    {q:"What is feature engineering?",opts:["Removing all features","Creating new input features from existing data to improve model performance","Scaling features only","Selecting hardware features"],ans:1,exp:"Feature engineering transforms raw data into informative features that help ML models learn patterns more effectively."},
+    {q:"SMOTE is used to:",opts:["Remove duplicate data","Handle imbalanced datasets by generating synthetic minority samples","Normalize features","Select important features"],ans:1,exp:"SMOTE (Synthetic Minority Over-sampling Technique) generates synthetic samples for the minority class to balance datasets."},
+    {q:"LDA (Linear Discriminant Analysis) is used for:",opts:["Clustering","Dimensionality reduction while maximizing class separability","Image generation","Time series analysis"],ans:1,exp:"LDA reduces dimensions while maximizing the separation between different classes — useful before classification."},
+    {q:"Feature selection helps by:",opts:["Adding more irrelevant features","Removing irrelevant/redundant features to improve model efficiency","Making all features equal","Encoding categorical data"],ans:1,exp:"Feature selection removes irrelevant and redundant features, reducing overfitting, improving accuracy, and speeding up training."},
+    {q:"Recursive Feature Elimination (RFE):",opts:["Adds features one by one","Recursively removes the least important features","Clusters features","Generates new features"],ans:1,exp:"RFE recursively removes the least important features (based on model weights) until the desired number is reached."},
+  ],
+  10:[
+    {q:"What is a neuron in a neural network?",opts:["A physical brain cell","A computational unit that receives inputs, applies weights, and produces output","A type of data","A hardware chip"],ans:1,exp:"An artificial neuron mimics a biological neuron — it takes weighted inputs, applies an activation function, and outputs a value."},
+    {q:"What is the ReLU activation function?",opts:["Returns -1 for all negatives","Returns max(0, x) — outputs 0 for negative, x for positive","Outputs values between 0 and 1","Random output"],ans:1,exp:"ReLU (Rectified Linear Unit) = max(0, x). It's the most popular activation function as it avoids vanishing gradients."},
+    {q:"What does backpropagation do?",opts:["Loads more training data","Calculates gradients and updates weights to minimize loss","Selects features","Visualizes the network"],ans:1,exp:"Backpropagation computes gradients of the loss w.r.t. each weight and propagates them backward to update the network."},
+    {q:"Which framework is commonly used for deep learning in Python?",opts:["Django","Flask","TensorFlow/Keras","Pandas"],ans:2,exp:"TensorFlow (with Keras API) and PyTorch are the two leading deep learning frameworks for building neural networks."},
+    {q:"Gradient Descent minimizes:",opts:["Model accuracy","The loss/cost function","The dataset size","The learning rate"],ans:1,exp:"Gradient Descent iteratively adjusts model parameters in the direction that reduces the loss function."},
+  ],
+  11:[
+    {q:"CNN stands for:",opts:["Content Navigation Network","Convolutional Neural Network","Computed Node Network","Complex Neural Node"],ans:1,exp:"CNN (Convolutional Neural Network) is specialized for processing grid-like data such as images."},
+    {q:"What does a convolution operation do in CNN?",opts:["Flattens the image","Applies a filter/kernel to extract local features","Adds more layers","Reduces image resolution only"],ans:1,exp:"Convolution applies a learnable filter/kernel across the image to extract spatial features like edges, shapes, and textures."},
+    {q:"Transfer learning in computer vision means:",opts:["Transferring images between devices","Using a pre-trained model (e.g., ResNet) and fine-tuning on new data","Training from scratch","Copying model weights randomly"],ans:1,exp:"Transfer learning reuses knowledge from models trained on large datasets (like ImageNet) and fine-tunes for specific tasks."},
+    {q:"YOLO is used for:",opts:["Text generation","Real-time object detection","Audio processing","Data augmentation"],ans:1,exp:"YOLO (You Only Look Once) is a real-time object detection algorithm that identifies and localizes objects in images/video."},
+    {q:"OCR stands for:",opts:["Object Cluster Recognition","Optical Character Recognition","Open Convolutional Representation","Output Class Regression"],ans:1,exp:"OCR (Optical Character Recognition) converts text in images/scans into machine-readable text."},
+  ],
+  12:[
+    {q:"Tokenization in NLP means:",opts:["Encrypting text","Breaking text into individual words or subwords (tokens)","Translating languages","Compressing text"],ans:1,exp:"Tokenization splits text into tokens (words, subwords, or characters) — the first step in NLP preprocessing."},
+    {q:"TF-IDF measures:",opts:["Temperature and frequency","Term Frequency-Inverse Document Frequency — word importance in a document","Text Format Index","Total Feature Index"],ans:1,exp:"TF-IDF weights words by their frequency in a document (TF) inversely proportional to their frequency across documents (IDF)."},
+    {q:"What are Word2Vec embeddings?",opts:["Random word assignments","Dense vector representations that capture semantic meaning of words","Frequency counts of words","Binary word flags"],ans:1,exp:"Word2Vec creates dense word embeddings where semantically similar words are close in vector space."},
+    {q:"LSTM solves which problem in RNNs?",opts:["Overfitting","The vanishing gradient problem for long sequences","High computational cost","Memory overflow"],ans:1,exp:"LSTM (Long Short-Term Memory) uses gating mechanisms to selectively remember/forget information, solving vanishing gradients."},
+    {q:"BERT is based on which architecture?",opts:["CNN","RNN","Transformer","GAN"],ans:2,exp:"BERT (Bidirectional Encoder Representations from Transformers) is built on the Transformer architecture with bidirectional attention."},
+  ],
+  13:[
+    {q:"In Reinforcement Learning, what is an 'agent'?",opts:["The dataset","The entity that learns and makes decisions by interacting with an environment","A reward function","A neural network"],ans:1,exp:"The agent is the learner/decision-maker that interacts with the environment, takes actions, and learns from rewards."},
+    {q:"What is a reward in RL?",opts:["The agent itself","Feedback signal indicating how good an action was","The training data","A penalty only"],ans:1,exp:"A reward is a scalar feedback signal that tells the agent how good its action was — agents aim to maximize cumulative reward."},
+    {q:"MDP stands for:",opts:["Modular Data Pipeline","Markov Decision Process","Machine Deep Program","Multi-Dimensional Parameter"],ans:1,exp:"MDP (Markov Decision Process) is the mathematical framework for RL problems: states, actions, transitions, and rewards."},
+    {q:"Q-Learning is:",opts:["A supervised learning algorithm","A model-free RL algorithm that learns the value of actions in states","A clustering technique","A CNN variant"],ans:1,exp:"Q-Learning is a model-free RL algorithm that learns a Q-table of state-action values to derive the optimal policy."},
+    {q:"Deep Q-Network (DQN) uses:",opts:["Only linear models","A neural network to approximate Q-values for large state spaces","Decision trees","K-Means clustering"],ans:1,exp:"DQN uses a neural network to approximate Q-values, enabling RL to work with high-dimensional state spaces like game pixels."},
+  ],
+  14:[
+    {q:"What is Generative AI?",opts:["AI that only classifies data","AI that can create new content (text, images, audio, video)","AI for robotics only","AI for database management"],ans:1,exp:"Generative AI creates new content — text, images, music, video — by learning patterns from training data."},
+    {q:"Prompt Engineering is:",opts:["Building physical machines","Crafting effective inputs/instructions to get optimal outputs from AI models","Electrical engineering","Compiling code"],ans:1,exp:"Prompt Engineering is the skill of designing effective prompts to guide LLMs toward desired outputs."},
+    {q:"RAG stands for:",opts:["Random Augmented Generation","Retrieval Augmented Generation","Recurrent Attention Gate","Real-time AI Generation"],ans:1,exp:"RAG (Retrieval Augmented Generation) enhances LLMs by retrieving relevant documents from a knowledge base before generating responses."},
+    {q:"Fine-tuning an LLM means:",opts:["Deleting the base model","Training a pre-trained model further on domain-specific data","Rewriting the model from scratch","Only changing the output layer"],ans:1,exp:"Fine-tuning adapts a pre-trained LLM on task-specific or domain-specific data to improve performance for that use case."},
+    {q:"AI Agents are:",opts:["Simple chatbots","Autonomous AI systems that can plan, use tools, and complete multi-step tasks","Hardware robots only","Static ML models"],ans:1,exp:"AI Agents are autonomous systems that use LLMs, tools, and memory to plan and execute complex multi-step tasks."},
+  ],
+  15:[
+    {q:"What is MLOps?",opts:["Machine Learning Operations — practices for deploying and maintaining ML systems in production","A Python library","A cloud service","A type of neural network"],ans:0,exp:"MLOps combines ML, DevOps, and data engineering to streamline deployment, monitoring, and maintenance of ML models."},
+    {q:"Docker in MLOps is used for:",opts:["Training models faster","Containerizing applications for consistent deployment across environments","Storing datasets","Visualizing data"],ans:1,exp:"Docker packages ML apps with dependencies into containers, ensuring they run consistently across development, testing, and production."},
+    {q:"Which tool is used for model deployment as a web API?",opts:["NumPy","Pandas","FastAPI/Flask","Matplotlib"],ans:2,exp:"Flask and FastAPI are Python frameworks for building web APIs to deploy ML models as production services."},
+    {q:"CI/CD in ML stands for:",opts:["Continuous Intelligence / Continuous Data","Continuous Integration / Continuous Deployment","Custom Interface / Custom Deployment","Cluster Index / Cluster Distribution"],ans:1,exp:"CI/CD automates testing and deployment pipelines — ensuring ML code and models are continuously integrated and deployed safely."},
+    {q:"Model monitoring in production tracks:",opts:["Only model accuracy at training","Data drift, model performance degradation, and prediction quality over time","Hardware temperatures","User passwords"],ans:1,exp:"Model monitoring detects data drift (input distribution changes) and performance degradation in production ML systems."},
+  ],
+  16:[
+    {q:"Explainable AI (XAI) focuses on:",opts:["Making AI faster","Making AI decisions interpretable and understandable to humans","Reducing AI cost","Making AI offline"],ans:1,exp:"XAI makes AI decision-making transparent and interpretable so humans can understand, trust, and audit AI systems."},
+    {q:"AI bias occurs when:",opts:["AI is too accurate","AI makes unfair, discriminatory decisions due to biased training data","AI uses too much power","AI works too fast"],ans:1,exp:"AI bias arises when training data reflects historical inequalities, causing AI to perpetuate or amplify discrimination."},
+    {q:"GDPR is relevant to AI because:",opts:["It improves AI accuracy","It regulates data privacy, affecting how AI systems can collect and use personal data","It speeds up model training","It defines programming standards"],ans:1,exp:"GDPR (General Data Protection Regulation) governs data privacy in the EU, directly impacting how AI systems process personal data."},
+    {q:"What is Algorithmic Transparency?",opts:["Open-source code requirement","Ability to understand and audit how an AI system reaches its decisions","Making algorithms public domain","Removing all biases"],ans:1,exp:"Algorithmic transparency means AI decision processes are understandable and auditable by affected parties and regulators."},
+    {q:"Responsible AI development requires:",opts:["Only technical expertise","Diverse teams, ethical guidelines, bias audits, and ongoing monitoring","Only business focus","Only government regulation"],ans:1,exp:"Responsible AI needs diverse teams, clear ethical guidelines, regular bias audits, stakeholder engagement, and continuous monitoring."},
+  ],
+  17:[
+    {q:"In a Fake News Classifier project, which ML task is this?",opts:["Regression","Binary Classification (real/fake)","Clustering","Object detection"],ans:1,exp:"Fake news detection is binary classification — the model predicts whether a news article is real (1) or fake (0)."},
+    {q:"For an AI chatbot using an LLM, which approach gives domain-specific answers?",opts:["Zero-shot prompting only","RAG with a custom knowledge base","Only fine-tuning","Basic keyword matching"],ans:1,exp:"RAG retrieves relevant documents from a knowledge base, giving the LLM context for accurate domain-specific responses."},
+    {q:"Face Recognition system uses which technology?",opts:["NLP and BERT","CNN for facial feature extraction + distance metrics","Decision Trees","K-Means clustering"],ans:1,exp:"Face recognition uses CNNs to extract facial embeddings, then compares embeddings using distance metrics (cosine similarity)."},
+    {q:"For a medical diagnosis predictor, which evaluation metric is most important?",opts:["Training speed","Recall (sensitivity) — minimizing missed diagnoses (false negatives)","Model file size","Number of features"],ans:1,exp:"In medical diagnosis, Recall (sensitivity) is critical — missing a true positive (disease) is far more dangerous than a false positive."},
+    {q:"Speech-to-text models typically use:",opts:["CNNs only","RNN/LSTM or Transformer-based models (e.g., Whisper) on audio spectrograms","K-Means clustering","Linear regression"],ans:1,exp:"Speech-to-text uses deep learning (transformers like Whisper or RNN-based models) trained on audio spectrograms to transcribe speech."},
+  ],
+};
+
+// ====== QUIZ STATE ======
+let qState={};
+
+
+// ====== TAMIL QUIZ DATA (All 17 Levels) ======
+const QUIZ_DATA_TA = {
+  1:[
+    {q:"AI என்றால் என்ன?",opts:["தானியங்கு இணையம்","செயற்கை நுண்ணறிவு","மேம்பட்ட உள்ளீடு","தானியங்கு தகவல்"],ans:1,exp:"AI என்பது Artificial Intelligence — இயந்திரங்களால் மனித நுண்ணறிவை பகுப்பாய்வு செய்வது."},
+    {q:"எந்த வகை AI எந்த அறிவார்ந்த பணியையும் செய்யும்?",opts:["ANI","AGI","ASI","ML"],ans:1,exp:"AGI (Artificial General Intelligence) மனிதர்களைப் போல எந்த பணியையும் செய்யும் திறன் கொண்டது."},
+    {q:"இயந்திர கற்றல் என்றால் என்ன?",opts:["இயந்திரங்கள் கட்டுவது","தரவிலிருந்து கற்கும் AI","விதிகளை கைமுறையாக நிரல்படுத்துவது","வன்பொருள் தொழில்நுட்பம்"],ans:1,exp:"Machine Learning என்பது AI-இன் ஒரு பிரிவு, தரவிலிருந்து தானாகவே கற்று மேம்படும்."},
+    {q:"இவற்றில் AI பயன்பாடு அல்லாதது எது?",opts:["Google Maps","Netflix பரிந்துரை","அடிப்படை கணிப்பான்","Siri"],ans:2,exp:"அடிப்படை கணிப்பான் நிலையான கணக்கீடுகளை மட்டும் செய்கிறது — அது AI அல்ல."},
+    {q:"பொறுப்பான AI கவனிப்பது:",opts:["வேகம்","நியாயம், வெளிப்படைத்தன்மை, பொறுப்பு","செலவு குறைப்பு","ஆஃப்லைன் செயல்பாடு"],ans:1,exp:"பொறுப்பான AI என்பது நியாயமான, வெளிப்படையான, பொறுப்பான AI அமைப்புகளை உறுதி செய்கிறது."},
+  ],
+  2:[
+    {q:"Python-இல் 'def' என்பது என்ன செய்யும்?",opts:["மாறி வரையறுக்கும்","செயல்பாடு வரையறுக்கும்","செயல்பாடு நீக்கும்","கோப்பு அறிவிக்கும்"],ans:1,exp:"'def' Python-இல் ஒரு செயல்பாட்டை உருவாக்க பயன்படுகிறது."},
+    {q:"Python-இல் எந்த தரவு கட்டமைப்பு key-value சேமிக்கும்?",opts:["List","Tuple","Dictionary","Set"],ans:2,exp:"Dictionary key-value இணைகளை சேமிக்கிறது, எ.கா: {'பெயர்': 'Fox'}."},
+    {q:"Python AI-இல் எண்கணிதத்திற்கு எந்த நூலகம்?",opts:["Flask","NumPy","Django","SQLite"],ans:1,exp:"NumPy (Numerical Python) Python AI/ML-இல் எண்கணிதத்தின் அடிப்படை."},
+    {q:"OOP என்றால் என்ன?",opts:["Online Operating Protocol","Object-Oriented Programming","Open Output Protocol","Object Operating Pipeline"],ans:1,exp:"OOP என்பது வகுப்புகள் மற்றும் பொருள்களாக குறியீட்டை ஒழுங்கமைக்கும் நிரலாக்க முறை."},
+    {q:"DataFrame-களுக்கு எந்த Python நூலகம்?",opts:["NumPy","Matplotlib","Pandas","TensorFlow"],ans:2,exp:"Pandas தரவு கையாளுதல் மற்றும் பகுப்பாய்வுக்கான முதன்மை Python நூலகம்."},
+  ],
+  3:[
+    {q:"A×B அணி பெருக்கலில் எது பொருந்த வேண்டும்?",opts:["A வரிசைகள் = B வரிசைகள்","A நெடுவரிசைகள் = B வரிசைகள்","A வரிசைகள் = B நெடுவரிசைகள்","அனைத்தும் பொருந்த வேண்டும்"],ans:1,exp:"A×B-க்கு A-இன் நெடுவரிசைகள் B-இன் வரிசைகளுக்கு சமனாக இருக்க வேண்டும்."},
+    {q:"வெக்டர் என்றால் என்ன?",opts:["2D அணி","திசையுள்ள 1D எண் வரிசை","அளவீடு மட்டும்","சரங்களின் தொகுப்பு"],ans:1,exp:"வெக்டர் என்பது அளவு மற்றும் திசை கொண்ட 1D வரிசை, ML-இல் தரவு புள்ளிகளை குறிக்கிறது."},
+    {q:"சாத்தியமற்ற நிகழ்வின் நிகழ்தகவு:",opts:["1","0.5","0","-1"],ans:2,exp:"சாத்தியமற்ற நிகழ்வின் நிகழ்தகவு 0 ஆகும். நிகழ்தகவுகள் 0 முதல் 1 வரை இருக்கும்."},
+    {q:"சராசரி (mean) எதை அளவிடுகிறது?",opts:["அதிக மதிப்பு","நடு மதிப்பு","மையப் போக்கு","தரவின் பரவல்"],ans:2,exp:"சராசரி மையப் போக்கை அளவிடுகிறது — தரவின் சராசரி மதிப்பு."},
+    {q:"AI/ML-இல் வழிப்பிறழ்வு (derivative) எதற்கு?",opts:["தரவு சேமிப்பு","மாதிரிகளை மேம்படுத்த சாய்வு கண்டறிய","குறியாக்கம்","தரவு ஏற்றுதல்"],ans:1,exp:"வழிப்பிறழ்வுகள் மாற்றத்தை அளவிடுகின்றன. ML-இல் loss functions-ஐ குறைக்க gradient descent-இல் பயன்படுகின்றன."},
+  ],
+  4:[
+    {q:"கட்டமைக்கப்பட்ட தரவு என்றால் என்ன?",opts:["படங்களில் உள்ள தரவு","வரிசைகள் மற்றும் நெடுவரிசைகளில் ஒழுங்கமைக்கப்பட்ட தரவு","சீரற்ற உரை","ஆடியோ கோப்புகள்"],ans:1,exp:"கட்டமைக்கப்பட்ட தரவு அட்டவணை வடிவில் ஒழுங்கமைக்கப்பட்டுள்ளது — தேடவும் பகுப்பாய்வு செய்யவும் எளிது."},
+    {q:"CSV என்றால் என்ன?",opts:["Comma-Separated Values","Character String Variable","Computed Statistical View","Coded Syntax Value"],ans:0,exp:"CSV = Comma-Separated Values. அட்டவணை தரவை சேமிக்க கமாக்களை பிரிப்பான்களாக பயன்படுத்தும் வடிவம்."},
+    {q:"கட்டமைக்கப்படாத தரவுக்கு உதாரணம்?",opts:["விற்பனை தாள்","தரவுத்தள அட்டவணை","உரை மற்றும் படங்களுள்ள மின்னஞ்சல்","CSV கோப்பு"],ans:2,exp:"படங்களுடன் உரையுள்ள மின்னஞ்சல்கள் கட்டமைக்கப்படாத தரவு — முன்னரே தீர்மானிக்கப்பட்ட வடிவம் இல்லை."},
+    {q:"Dataset என்றால் என்ன?",opts:["ஒற்றை தரவு புள்ளி","பகுப்பாய்வு/பயிற்சிக்கான ஒழுங்கமைக்கப்பட்ட தரவு தொகுப்பு","நிரலாக்க மொழி","சேவையகம்"],ans:1,exp:"Dataset என்பது ML மாதிரிகளை பகுப்பாய்வு செய்யவும் பயிற்றுவிக்கவும் பயன்படும் தரவின் தொகுப்பு."},
+    {q:"JSON என்றால் என்ன?",opts:["Java Source Object Notation","JavaScript Object Notation","Just String Operations Now","Java Standard Output Node"],ans:1,exp:"JSON (JavaScript Object Notation) API-களிலும் தரவு சேமிப்பிலும் பரவலாக பயன்படும் வடிவம்."},
+  ],
+  5:[
+    {q:"Feature scaling என்ன செய்கிறது?",opts:["அம்சங்களை நீக்குகிறது","மதிப்புகளை ஒத்த வரம்பிற்கு இயல்பாக்குகிறது","அம்சங்களை சேர்க்கிறது","outliers-ஐ நீக்குகிறது"],ans:1,exp:"Feature scaling அனைத்து அம்சங்களும் மாதிரிக்கு சம அளவில் பங்களிக்க இயல்பாக்குகிறது."},
+    {q:"One-Hot Encoding என்றால் என்ன?",opts:["கடவுச்சொல் குறியாக்கம்","வகை மாறிகளை இருமக் நெடுவரிசைகளாக மாற்றுவது","சரம் hash செய்வது","தரவை சுருக்குவது"],ans:1,exp:"One-Hot Encoding ஒவ்வொரு வகையையும் இருமக் நெடுவரிசையாக (0 அல்லது 1) மாற்றுகிறது."},
+    {q:"காணாத மதிப்புகளை எவ்வாறு கையாள்வது?",opts:["முழு dataset-ஐ நீக்கு","imputation அல்லது நீக்கம்","புறக்கணி","999-ஆல் மாற்று"],ans:1,exp:"காணாத மதிப்புகளை சராசரி/மத்திய/முகடு imputation மூலம் அல்லது அந்த வரிசைகளை நீக்கி கையாள்வார்கள்."},
+    {q:"Normalization என்றால் என்ன?",opts:["மதிப்புகளை 0 மற்றும் 1 இடையில் அளவிடுவது","z-scores-க்கு standardizing","நகல்களை நீக்குவது","வகைகளை குறியாக்கம் செய்வது"],ans:0,exp:"Normalization (Min-Max scaling) மதிப்புகளை [0, 1] வரம்பிற்கு மாற்றுகிறது."},
+    {q:"Outlier என்றால் என்ன?",opts:["மிகவும் பொதுவான மதிப்பு","மற்றவற்றிலிருந்து கணிசமாக வேறுபட்ட தரவு புள்ளி","மத்திய மதிப்பு","காணாத மதிப்பு"],ans:1,exp:"Outlier என்பது மற்ற தரவிலிருந்து வெகு தொலைவில் உள்ள தரவு புள்ளி, இது புள்ளியியல் பகுப்பாய்வை சிதைக்கும்."},
+  ],
+  6:[
+    {q:"EDA என்றால் என்ன?",opts:["Extra Data Analysis","Exploratory Data Analysis","Extended Data Algorithm","Efficient Data Architecture"],ans:1,exp:"EDA (Exploratory Data Analysis) தரவை புரிந்துகொள்ள முன்னர் முறையற்ற பகுப்பாய்வு செய்வது."},
+    {q:"Histogram எதை காட்டுகிறது?",opts:["இரு மாறிகளின் தொடர்பு","ஒரு மாறியின் விநியோகம்","காலப்போக்கு","வகை எண்ணிக்கை"],ans:1,exp:"Histogram ஒரு மாறியின் மதிப்புகளின் விநியோகத்தை காட்டுகிறது."},
+    {q:"Correlation என்ன அளவிடுகிறது?",opts:["காரண-விளைவு உறவு","இரு மாறிகளுக்கிடையேயான கோட்டு தொடர்பின் வலிமை","சராசரி மதிப்பு","தரவின் அளவு"],ans:1,exp:"Correlation இரு மாறிகளுக்கிடையில் எவ்வளவு நெருங்கிய கோட்டு தொடர்பு உள்ளது என்பதை அளவிடுகிறது."},
+    {q:"Box plot எதை காட்டுகிறது?",opts:["காலப்போக்கு","சராசரி மட்டும்","மத்திய, நூற்றுக்கணக்கு மற்றும் outliers","நிகழ்தகவு"],ans:2,exp:"Box plot மத்திய மதிப்பு, நூற்றுக்கணக்கு மற்றும் outliers உட்பட தரவின் சுருக்கத்தை காட்டுகிறது."},
+    {q:"Heatmap எதற்காக பயன்படுகிறது?",opts:["படங்களை காட்ட","correlation அணிகளை காட்ட","தரவை சுருக்க","நெட்வொர்க்கை வரைய"],ans:1,exp:"Heatmap correlation அணிகளை காட்சிப்படுத்த பரவலாக பயன்படுகிறது, மாறிகளுக்கிடையேயான தொடர்பை காட்டுகிறது."},
+  ],
+  7:[
+    {q:"Supervised learning என்றால் என்ன?",opts:["லேபிளிடப்படாத தரவு","சரியான விடைகளுடன் லேபிளிடப்பட்ட தரவு","தரவே இல்லாமல்","படங்கள் மட்டும்"],ans:1,exp:"Supervised learning-இல் மாதிரி லேபிளிடப்பட்ட தரவிலிருந்து கற்கிறது — input-output இணைகள்."},
+    {q:"Classification என்றால் என்ன?",opts:["தொடர்ச்சியான மதிப்பை கணிப்பது","வகைகளை கணிப்பது","தரவை தொகுப்பதுது","outliers-ஐ கண்டறிவது"],ans:1,exp:"Classification வகை labels-ஐ கணிக்கிறது, எ.கா: மின்னஞ்சல் spam/not-spam."},
+    {q:"Regression என்றால் என்ன?",opts:["வகை label கணிப்பு","தொடர்ச்சியான எண் மதிப்பு கணிப்பு","தொகுப்பு அல்காரிதம்","படங்கள் வகைப்படுத்துதல்"],ans:1,exp:"Regression தொடர்ச்சியான மதிப்புகளை கணிக்கிறது, எ.கா: வீட்டின் விலை."},
+    {q:"Overfitting என்றால் என்ன?",opts:["மாதிரி எல்லா தரவிலும் செயல்படுகிறது","மாதிரி பயிற்சி தரவை மனப்பாடம் செய்து புதிய தரவில் தோல்வியடைகிறது","மாதிரி மெதுவாக பயிற்சி பெறுகிறது","மாதிரி அதிக சக்தி பயன்படுத்துகிறது"],ans:1,exp:"Overfitting என்பது மாதிரி பயிற்சி தரவை மிகவும் நெருக்கமாக கற்று புதிய தரவில் பொதுமைப்படுத்த தவறுகிறது."},
+    {q:"Train-test split ஏன் செய்கிறோம்?",opts:["தரவை வரிசைப்படுத்த","மாதிரியை பயிற்றுவிக்க மற்றும் புதிய தரவில் மதிப்பீட்டிற்கு","தரவை குறியாக்கம் செய்ய","தரவை சுருக்க"],ans:1,exp:"Train-test split மாதிரி பயிற்சி பெறாத தரவில் எவ்வாறு செயல்படுகிறது என்று மதிப்பிட உதவுகிறது."},
+  ],
+  8:[
+    {q:"Unsupervised learning-ல் என்ன வகை தரவு பயன்படுகிறது?",opts:["லேபிளிடப்பட்ட தரவு","லேபிளிடப்படாத தரவு","சோதனை தரவு","structured மட்டும்"],ans:1,exp:"Unsupervised learning-இல் மாதிரிக்கு விடைகள் தரப்படவில்லை — சொந்தமாக pattern கண்டறிகிறது."},
+    {q:"K-Means clustering என்ன செய்கிறது?",opts:["வகை labels கணிக்கிறது","தரவை K குழுக்களாக பிரிக்கிறது","features இயல்பாக்குகிறது","outliers நீக்குகிறது"],ans:1,exp:"K-Means தரவை K தொகுப்புகளாக பிரிக்கிறது, ஒவ்வொன்றும் அதன் centroid-ஐ சுற்றி."},
+    {q:"Dimensionality reduction என்றால் என்ன?",opts:["features எண்ணிக்கை அதிகரிக்கும்","features எண்ணிக்கை குறைக்கும்","தரவை நகல் செய்யும்","தரவை நீக்கும்"],ans:1,exp:"Dimensionality reduction முக்கியமான தகவலை வைத்துக்கொண்டே features எண்ணிக்கையை குறைக்கிறது."},
+    {q:"PCA என்றால் என்ன?",opts:["Personal Computer Algorithm","Principal Component Analysis","Primary Classification Approach","Pattern Clustering Algorithm"],ans:1,exp:"PCA (Principal Component Analysis) தரவின் மிக முக்கியமான வழிகளை கண்டறியும் dimensionality reduction நுட்பம்."},
+    {q:"Clustering-இல் 'elbow method' என்ன?",opts:["clusters-ஐ பெயரிட","சரியான K குழு எண்ணிக்கை கண்டறிய","outliers நீக்க","தரவை சுருக்க"],ans:1,exp:"Elbow method K-Means-இல் சரியான clusters எண்ணிக்கையை கண்டறிய உதவுகிறது."},
+  ],
+  9:[
+    {q:"Feature engineering என்றால் என்ன?",opts:["மாதிரி நிரலாக்கம்","ML-க்கு மேம்பட்ட features உருவாக்கும் செயல்முறை","தரவை நீக்குதல்","மாதிரி சோதித்தல்"],ans:1,exp:"Feature engineering மாதிரி செயல்திறனை மேம்படுத்த domain knowledge பயன்படுத்தி features உருவாக்குகிறது."},
+    {q:"Feature selection என்ன செய்கிறது?",opts:["புதிய features உருவாக்குகிறது","மிகவும் பொருத்தமான features தேர்ந்தெடுக்கிறது","தரவை இயல்பாக்குகிறது","மாதிரியை பயிற்றுவிக்கிறது"],ans:1,exp:"Feature selection மாதிரி செயல்திறனை மேம்படுத்த மிக முக்கியமான features மட்டும் தேர்ந்தெடுக்கிறது."},
+    {q:"Label encoding என்றால் என்ன?",opts:["features இயல்பாக்குகிறது","வகை மதிப்புகளை எண்களாக மாற்றுகிறது","லேபிளிடப்பட்ட தரவு உருவாக்குகிறது","features பெயரிடுகிறது"],ans:1,exp:"Label encoding வகை மதிப்புகளை (எ.கா: 'சிவப்பு','நீலம்') முழு எண்களாக மாற்றுகிறது."},
+    {q:"Interaction features என்ன?",opts:["user interactions","இரு அல்லது அதிக features-ஐ இணைத்து புதிய features","API connections","feature புள்ளியியல்"],ans:1,exp:"Interaction features ஏற்கனவே உள்ள features-ஐ இணைத்து புதிய features உருவாக்குகின்றன, மறைந்த உறவுகளை வெளிப்படுத்துகின்றன."},
+    {q:"Feature importance எதற்கு?",opts:["features அளவிட","மாதிரி முடிவுகளுக்கு எந்த features மிக அதிகமாக பங்களிக்கின்றன என்று அறிய","features நீக்க","தரவை குறியாக்கம் செய்ய"],ans:1,exp:"Feature importance மாதிரி கணிப்புகளில் எந்த features மிகவும் முக்கியமானவை என்பதை விளக்குகிறது."},
+  ],
+  10:[
+    {q:"Deep learning-ல் 'layers' என்ன?",opts:["கட்டிட தளங்கள்","தரவை செயலாக்கி மாற்றும் neuron குழுக்கள்","video game நிலைகள்","கேபிள் வகைகள்"],ans:1,exp:"Layers என்பது neural network-இல் உள்ள neuron குழுக்கள், தரவை படிப்படியாக செயலாக்குகின்றன."},
+    {q:"Activation function என்ன செய்கிறது?",opts:["network-ஐ பயிற்றுவிக்கிறது","network-ல் non-linearity அறிமுகப்படுத்துகிறது","தரவை சுருக்குகிறது","layers நீக்குகிறது"],ans:1,exp:"Activation functions neural network-இல் non-linearity அறிமுகப்படுத்துகின்றன, சிக்கலான patterns கற்க உதவுகின்றன."},
+    {q:"LLM என்றால் என்ன?",opts:["மிகப்பெரிய அகராதி","மொழி புரிந்துகொள்ள பெரும் தரவில் பயிற்சி பெற்ற AI மாதிரி","மொழிபெயர்ப்பு கருவி மட்டும்","தேடுபொறி"],ans:1,exp:"LLM (Large Language Model) மொழியை புரிந்துகொள்ளவும் உருவாக்கவும் பெரும் உரை தரவில் பயிற்சி பெற்ற AI மாதிரி."},
+    {q:"Backpropagation என்ன செய்கிறது?",opts:["தரவு சேமிக்கிறது","பிழைகளை குறைக்க மாதிரி எடைகளை சரிசெய்கிறது","CPU வேகப்படுத்துகிறது","இணையத்துடன் இணைக்கிறது"],ans:1,exp:"Backpropagation பயிற்சியில் loss-ஐ குறைக்க மாதிரி எடைகளை சரிசெய்கிறது."},
+    {q:"Gradient descent என்றால் என்ன?",opts:["ஒரு வகை தரவு","loss function-ஐ குறைக்கும் உகப்பாக்க அல்காரிதம்","நெட்வொர்க் இணைப்பு","data scaling முறை"],ans:1,exp:"Gradient descent loss function-ஐ குறைக்க மாதிரியின் எடைகளை படிப்படியாக சரிசெய்கிறது."},
+  ],
+  11:[
+    {q:"Computer Vision என்ன செய்கிறது?",opts:["கணிப்பொறி திட்டமிடுதல்","படங்கள் மற்றும் காணொளிகளை புரிந்துகொள்ள AI உதவுகிறது","கணிப்பொறி நெட்வொர்க்","voice recognition"],ans:1,exp:"Computer Vision படங்கள் மற்றும் காணொளிகளை புரிந்துகொள்ளவும் விளக்கவும் AI-ஐ செயல்படுத்துகிறது."},
+    {q:"CNN என்றால் என்ன?",opts:["Circular Neural Network","Convolutional Neural Network","Connected Neuron Network","Coded Neural Node"],ans:1,exp:"CNN (Convolutional Neural Network) படங்களில் உள்ள patterns-ஐ கண்டறிய சிறப்பாக வடிவமைக்கப்பட்ட deep learning மாதிரி."},
+    {q:"Object detection என்ன செய்கிறது?",opts:["சத்தம் கண்டறிவது","படத்தில் பொருட்களை கண்டறிந்து அடையாளம் காண்பது","உரை மொழிபெயர்ப்பு","இசை உருவாக்கம்"],ans:1,exp:"Object detection படங்களில் பொருட்களை கண்டறிந்து பெட்டிகளால் அவற்றை அடையாளப்படுத்துகிறது."},
+    {q:"Image segmentation என்றால் என்ன?",opts:["படத்தை சுருக்குவது","படத்தை பகுதிகளாக பிரிப்பது","படத்திற்கு caption சேர்ப்பது","படத்தை சுழிக்கோட்டில் மாற்றுவது"],ans:1,exp:"Image segmentation படத்தை pixel அளவில் பொருள் வகைகளாக பிரிக்கிறது."},
+    {q:"Transfer learning CV-ல் ஏன் பயன்படுகிறது?",opts:["புதிய மொழிகள் கற்க","முன்பயிற்சி மாதிரிகளை புதிய பணிகளுக்கு பயன்படுத்த","சாதனங்களுக்கிடையில் தரவு மாற்ற","cloud storage"],ans:1,exp:"Transfer learning முன்பயிற்சி மாதிரி அறிவை புதிய CV பணிகளுக்கு மாற்றுகிறது, குறைந்த தரவு மற்றும் நேரத்தை சேமிக்கிறது."},
+  ],
+  12:[
+    {q:"NLP என்றால் என்ன?",opts:["Natural Language Processing","New Learning Program","Network Layer Protocol","None"],ans:0,exp:"NLP (Natural Language Processing) கணிப்பொறிகளுக்கு மனித மொழியை புரிந்துகொள்ளவும் உருவாக்கவும் உதவும் AI பிரிவு."},
+    {q:"Tokenization என்றால் என்ன?",opts:["கோப்புகளை குறியாக்கம்","உரையை சொற்கள் அல்லது வாக்கியங்களாக பிரிப்பது","தரவை குறியாக்கம்","மாதிரி பயிற்றுவிப்பது"],ans:1,exp:"Tokenization உரையை சிறிய இழைகளாக (tokens) பிரிக்கிறது — NLP-இன் முதல் படி."},
+    {q:"Sentiment analysis என்ன செய்கிறது?",opts:["உரையை மொழிபெயர்க்கிறது","உரையிலிருந்து உணர்வை கண்டறிகிறது","உரையை சுருக்குகிறது","படங்களை விவரிக்கிறது"],ans:1,exp:"Sentiment analysis உரையிலிருந்து நேர்மறை, எதிர்மறை அல்லது நடுநிலை உணர்வைக் கண்டறிகிறது."},
+    {q:"Word embeddings என்ன?",opts:["சொல்லின் நீளம்","சொற்களை அர்த்தமுடைய எண் vectors-ஆக குறிப்பது","சொல் வரிசை","உரை வடிவமைப்பு"],ans:1,exp:"Word embeddings சொற்களை அர்த்த தொடர்புகளை பிடிக்கும் எண் vectors-ஆக குறிக்கின்றன."},
+    {q:"Transformer architecture ஏன் சிறப்பானது?",opts:["வேகமான CPU","attention mechanism மூலம் நீண்ட தொடர்புகளை கண்டறிவதால்","குறைவான தரவு தேவை","offline செயல்படுவதால்"],ans:1,exp:"Transformers attention mechanism மூலம் வரிசையில் நீண்ட தூரத்திலுள்ள சொல் தொடர்புகளை கண்டறிகின்றன."},
+  ],
+  13:[
+    {q:"Reinforcement Learning என்றால் என்ன?",opts:["லேபிளிடப்பட்ட தரவில் கற்றல்","சோதனை மற்றும் பிழை மூலம் வெகுமானங்களை நோக்கி கற்றல்","தொகுப்பு கற்றல்","படங்களை வகைப்படுத்துதல்"],ans:1,exp:"RL என்பது ஒரு agent சூழலில் நடவடிக்கைகள் மேற்கொண்டு வெகுமானங்களை அதிகரிக்க சோதனை-பிழை மூலம் கற்கிறது."},
+    {q:"RL-ல் 'agent' என்றால் என்ன?",opts:["மனித ஆசிரியர்","சூழலுடன் தொடர்பு கொள்ளும் கற்கும் நிரல்","தரவுத்தள அட்டவணை","வன்பொருள் சாதனம்"],ans:1,exp:"Agent என்பது சூழலில் நடவடிக்கைகள் மேற்கொண்டு பரிசுகளை/தண்டனைகளை பெற்று கற்கும் கற்கும் நிரல்."},
+    {q:"Q-Learning என்றால் என்ன?",opts:["ஒரு நிரலாக்க மொழி","RL-ல் optimal action-values கண்டறியும் அல்காரிதம்","image recognition நுட்பம்","data compression முறை"],ans:1,exp:"Q-Learning ஒவ்வொரு நிலை-நடவடிக்கை இணைக்கும் எதிர்பார்க்கப்படும் வெகுமானத்தை கணக்கிடும் model-free RL அல்காரிதம்."},
+    {q:"RL எங்கே பயன்படுகிறது?",opts:["உரை மொழிபெயர்ப்பு மட்டும்","game playing, robotics, autonomous driving","புகைப்படம் திருத்தம்","spreadsheet கணக்கீடு"],ans:1,exp:"RL game playing, robotics, autonomous driving, recommendation systems-ல் பரவலாக பயன்படுகிறது."},
+    {q:"Exploration vs Exploitation என்றால் என்ன?",opts:["நூல்கள் vs tools","புதிய செயல்களை சோதிப்பது vs சிறந்த அறியப்பட்ட செயலை தேர்ந்தெடுப்பது","பயிற்சி vs சோதனை","ஆண்லைன் vs ஆஃப்லைன்"],ans:1,exp:"Exploration புதிய நடவடிக்கைகளை சோதிக்கிறது; exploitation ஏற்கனவே தெரிந்த சிறந்த நடவடிக்கையை தேர்ந்தெடுக்கிறது."},
+  ],
+  14:[
+    {q:"Generative AI என்ன செய்கிறது?",opts:["தரவை வகைப்படுத்துகிறது","புதிய உரை, படங்கள், ஆடியோ உருவாக்குகிறது","பிழைகளை கண்டறிகிறது","தரவை சுருக்குகிறது"],ans:1,exp:"Generative AI பயிற்சி தரவிலிருந்து கற்று புதிய உரை, படங்கள், குறியீடு, ஆடியோ போன்றவற்றை உருவாக்குகிறது."},
+    {q:"GAN என்றால் என்ன?",opts:["General Attention Network","Generative Adversarial Network","Guided Artificial Node","Global Algorithm Node"],ans:1,exp:"GAN (Generative Adversarial Network) realistic data உருவாக்க இரண்டு neural networks (generator & discriminator) போட்டியிடுகின்றன."},
+    {q:"Diffusion models என்ன செய்கிறது?",opts:["gas பரவலை simulate செய்கிறது","படிப்படியாக சத்தத்தை நீக்கி realistic படங்கள் உருவாக்குகிறது","தரவை compress செய்கிறது","neural networks பயிற்றுவிக்கிறது"],ans:1,exp:"Diffusion models சத்தத்திலிருந்து படிப்படியாக சத்தத்தை நீக்கி high-quality படங்கள் உருவாக்குகின்றன."},
+    {q:"Prompt engineering என்ன?",opts:["power cable","AI-யிடம் சிறந்த outputs பெற திறம்பட inputs வடிவமைப்பது","புதிய மொழி வடிவமைப்பது","circuit diagrams வரைவது"],ans:1,exp:"Prompt engineering AI மாதிரிகளிடமிருந்து சிறந்த results பெற திறம்பட inputs வடிவமைக்கும் நுட்பம்."},
+    {q:"Hallucination என்றால் என்ன?",opts:["AI தூங்குவது","AI நம்பகமற்ற அல்லது கட்டுக்கதையான தகவல் உருவாக்குவது","AI மிக மெதுவாக செயல்படுவது","API connection பிழை"],ans:1,exp:"Hallucination என்பது AI மாதிரிகள் நம்பிக்கையுடன் ஆனால் தவறான அல்லது கட்டுக்கதையான தகவலை உருவாக்கும் போக்கு."},
+  ],
+  15:[
+    {q:"MLOps என்றால் என்ன?",opts:["ML-ஐ operations-ஐ தனியாக வைப்பது","ML மாதிரிகளை production-இல் ஒழுங்காக பயன்படுத்தவும் கண்காணிக்கவும் செய்யும் நடைமுறைகள்","ML-ஐ நீக்குவது","ML மொழி"],ans:1,exp:"MLOps DevOps கொள்கைகளை ML-க்கு பயன்படுத்துகிறது — மாதிரிகளை production-இல் நம்பகமாக உருவாக்க, பயன்படுத்த, கண்காணிக்க."},
+    {q:"Model deployment என்றால் என்ன?",opts:["மாதிரியை நீக்குவது","real-world users பயன்படுத்துவதற்கு பயிற்சி பெற்ற மாதிரியை கிடைக்கச் செய்வது","மாதிரியை மறுபயிற்சி செய்வது","மாதிரி ஏற்றுமதி"],ans:1,exp:"Deployment என்பது பயிற்சி பெற்ற மாதிரியை உண்மையான பயன்பாட்டிற்கு production சூழலில் கிடைக்கச் செய்வது."},
+    {q:"Model monitoring என்ன செய்கிறது?",opts:["மாதிரியை பயிற்றுவிக்கிறது","production-ல் மாதிரி செயல்திறனை தொடர்ந்து கண்காணிக்கிறது","மாதிரியை நீக்குகிறது","features உருவாக்குகிறது"],ans:1,exp:"Model monitoring production மாதிரிகளை நேரடியாக கண்காணித்து செயல்திறன் குறைவு அல்லது data drift கண்டறிகிறது."},
+    {q:"CI/CD in MLOps என்றால் என்ன?",opts:["Computer Intelligence/Continuous Deployment","Continuous Integration/Continuous Deployment","Customer Interface/Customer Design","Code Integration/Code Debugging"],ans:1,exp:"CI/CD ML மாதிரிகளுக்கான தானியங்கு சோதனை மற்றும் deployment pipeline, விரைவான நம்பகமான வெளியீட்டை உறுதி செய்கிறது."},
+    {q:"Data drift என்றால் என்ன?",opts:["தரவு இழப்பு","production தரவு பயிற்சி தரவிலிருந்து காலப்போக்கில் மாறும் நிகழ்வு","தரவு சேமிப்பு","தரவு குறியாக்கம்"],ans:1,exp:"Data drift production-இல் input data விநியோகம் மாதிரி பயிற்சி பெற்ற தரவிலிருந்து மாறும்போது நிகழ்கிறது, மாதிரி செயல்திறனை பாதிக்கிறது."},
+  ],
+  16:[
+    {q:"AI bias ஏன் நிகழ்கிறது?",opts:["AI மிக வேகமாக இயங்குகிறது","AI-ல் உள்ள சார்பான பயிற்சி தரவு காரணமாக","AI அதிக சக்தி பயன்படுத்துகிறது","AI crash ஆகிறது"],ans:1,exp:"AI bias பெரும்பாலும் பயிற்சி தரவு சமுதாய சார்புகளை பிரதிபலிக்கும்போது நிகழ்கிறது, AI முடிவுகளை நியாயமற்றதாக ஆக்குகிறது."},
+    {q:"AI-யில் முக்கிய நெறிமுறை கவலை எது?",opts:["AI மிக மலிவானது","தனியுரிமை மீறல் மற்றும் தரவு தவறுபயன்","AI மிக வேகமாக செயல்படுகிறது","AI வண்ணமயமானது"],ans:1,exp:"AI-யில் முக்கிய நெறிமுறை கவலைகளில் தனியுரிமை மீறல், தரவு தவறுபயன், surveillance, bias ஆகியவை அடங்கும்."},
+    {q:"Deepfake தொழில்நுட்பம் ஒரு கவலையா ஏன்?",opts:["காணொளிகளை மங்கலாக்குவதால்","மக்களை தவறாக வழிநடத்த போலியான ஆனால் நம்பகமான காணொளிகள் உருவாக்குவதால்","அதிக சேமிப்பு பயன்படுத்துவதால்","இணையத்தை மெதுவாக்குவதால்"],ans:1,exp:"Deepfake AI மூலம் போலியான ஆனால் மிகவும் நம்பகமான காணொளிகள் உருவாக்குகிறது, இது தவறான தகவல் பரவலுக்கு வழிவகுக்கும்."},
+    {q:"AI-யில் transparency ஏன் முக்கியம்?",opts:["AI அழகாக காட்ட","AI-யின் முடிவுகளை விளக்க மற்றும் நம்பிக்கை ஏற்படுத்த","AI-ஐ மிக வேகமாக செய்ய","AI-ஐ மலிவாக செய்ய"],ans:1,exp:"Transparency என்பது AI முடிவுகளை நாம் புரிந்துகொள்ளவும் சவால் செய்யவும் உதவுகிறது — நம்பகத்தன்மை மற்றும் பொறுப்பை ஏற்படுத்துகிறது."},
+    {q:"AI regulation ஏன் தேவை?",opts:["AI-ஐ மெதுவாக்க","AI-ஐ நியாயமாக, பாதுகாப்பாக பயன்படுத்துவதையும் தீங்கு தடுப்பதையும் உறுதி செய்ய","AI-ஐ தடை செய்ய","AI-ஐ இலவசமாக்க"],ans:1,exp:"AI regulation பொறுப்பான வளர்ச்சியை உறுதி செய்கிறது, தனியுரிமை, பாதுகாப்பு, நியாயமான பயன்பாடு ஆகியவற்றை பாதுகாக்கிறது."},
+  ],
+  17:[
+    {q:"Capstone project என்ன?",opts:["ஒரு சோதனை","கற்றதை ஒருங்கிணைக்கும் இறுதி விரிவான திட்டம்","ஒரு சிறிய வினாடி வினா","ஒரு கூட்டம்"],ans:1,exp:"Capstone project கற்றல் திட்டத்தை முடிக்கும் இறுதி விரிவான திட்டம், ஒரு நிஜ உலக சவாலை தீர்க்கிறது."},
+    {q:"AI திட்டத்தில் முதல் படி என்ன?",opts:["உடனடியாக coding தொடங்க","சிக்கலை தெளிவாக வரையறுத்து தரவை சேகரிக்க","மாதிரியை deploy செய்ய","முடிவுகளை present செய்ய"],ans:1,exp:"எந்த AI திட்டமும் சிக்கலை தெளிவாக வரையறுத்து பொருத்தமான தரவை சேகரிப்பதில் தொடங்குகிறது."},
+    {q:"ML pipeline என்ன?",opts:["ஒரு software bug","data collection முதல் deployment வரை AI வளர்ச்சியில் தொடர்ச்சியான படிகள்","water pipeline","நெட்வொர்க் connection"],ans:1,exp:"ML pipeline data collection, preprocessing, training, evaluation மற்றும் deployment உட்பட்ட ஒரு தொடர்ச்சியான workflow."},
+    {q:"Model evaluation-ல் accuracy மட்டும் ஏன் போதாது?",opts:["accuracy எப்போதும் சரியானது","accuracy சமநிலையற்ற datasets-ல் தவறாக வழிநடத்தும்","accuracy அளவிட சிரமம்","accuracy மாதிரிகளுக்கு ஒத்து வரவில்லை"],ans:1,exp:"சமநிலையற்ற datasets-ல் (எ.கா: 95% ஒரு வகை) accuracy மட்டும் நம்பகமான metric அல்ல — precision, recall, F1 தேவை."},
+    {q:"AI திட்டத்தில் documentation ஏன் முக்கியம்?",opts:["படிவங்களை நிரப்ப","மற்றவர்கள் புரிந்துகொள்ளவும், பராமரிக்கவும், உங்கள் திட்டத்தை மேம்படுத்தவும்","திட்ட அளவை அதிகரிக்க","AI-ஐ மெதுவாக்க"],ans:1,exp:"நல்ல documentation மற்ற developers உங்கள் திட்டத்தை புரிந்துகொள்ளவும், பயன்படுத்தவும், மேம்படுத்தவும் உதவுகிறது."},
+  ],
+};
+
+
+function switchQuizLang(lang) {
+  window.currentLang = lang;
+  document.getElementById('qlang-en').classList.toggle('active', lang==='en');
+  document.getElementById('qlang-ta').classList.toggle('active', lang==='ta');
+  // Restart current level in chosen language
+  if(qState && qState.lvlId) launchQuiz(qState.lvlId);
+}
+
+function launchQuiz(lvlId){
+  const lvl=SYLLABUS.find(s=>s.id===lvlId);
+  if(!lvl) return;
+  const prevDone=lvlId===1||state.completed[lvlId-1];
+  if(!prevDone){toast('Complete level '+(lvlId-1)+' first!','error');return;}
+  qState={
+    lvlId,lvlName:lvl.name,lvlLevel:lvl.level,lvlXp:lvl.xp,
+    qs:(window.currentLang==='ta' ? (QUIZ_DATA_TA[lvlId]||QUIZ_DATA[lvlId]) : QUIZ_DATA[lvlId])||[],
+    cur:0,score:0,lives:3,totalXp:0,answered:false,
+    totalAns:0,totalCorrect:0
+  };
+  // Sync language toggle buttons with current lang
+  const _ql=window.currentLang||'en';
+  document.getElementById('qlang-en').classList.toggle('active',_ql==='en');
+  document.getElementById('qlang-ta').classList.toggle('active',_ql==='ta');
+  document.getElementById('qlvl-name').textContent=lvl.name;
+  document.getElementById('qlvl-diff').textContent=lvl.level.toUpperCase()+' • '+lvl.xp+' XP available';
+  updateQuizLives();
+  document.getElementById('quiz-xp').textContent=0;
+  showView('quiz');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const {qs,cur} = qState;
+  if(cur>=qs.length){showResult();return;}
+  const q=qs[cur];
+  const total=qs.length;
+  document.getElementById('quiz-prog').style.width=((cur/total)*100)+'%';
+  const letters=['A','B','C','D'];
+  document.getElementById('quiz-body').innerHTML=`
+    <div class="q-counter">Question ${cur+1} of ${total}</div>
+    <div class="q-text">${q.q}</div>
+    <div class="options-grid">
+      ${q.opts.map((o,i)=>`
+        <button class="opt-btn" id="opt-${i}" onclick="selectOpt(${i})">
+          <span class="opt-letter">${letters[i]}</span>${o}
+        </button>`).join('')}
+    </div>
+    <div class="feedback-box" id="fb-box"></div>
+    <button class="next-quiz-btn" id="nxt-btn" onclick="nextQ()">Next Question ›</button>
+  `;
+  qState.answered=false;
+  // Re-attach hover events to new buttons
+  document.querySelectorAll('.opt-btn').forEach(el=>{
+    el.addEventListener('mouseenter',()=>cur.classList&&cur.classList.add('hovering'));
+  });
+}
+
+function selectOpt(i){
+  if(qState.answered) return;
+  qState.answered=true;
+  qState.totalAns++;
+  const q=qState.qs[qState.cur];
+  const opts=document.querySelectorAll('.opt-btn');
+  opts.forEach(b=>b.disabled=true);
+  const fb=document.getElementById('fb-box');
+  const nxt=document.getElementById('nxt-btn');
+  if(i===q.ans){
+    opts[i].classList.add('correct');
+    qState.score++;qState.totalCorrect++;
+    const earned=Math.round(qState.lvlXp/qState.qs.length);
+    qState.totalXp+=earned;
+    state.xp+=earned;
+    document.getElementById('quiz-xp').textContent=qState.totalXp;
+    fb.textContent='✅ Correct! '+q.exp;
+    fb.className='feedback-box correct';
+  } else {
+    opts[i].classList.add('wrong');
+    opts[q.ans].classList.add('correct');
+    qState.lives--;
+    updateQuizLives();
+    fb.textContent='❌ Wrong! '+q.exp;
+    fb.className='feedback-box wrong';
+  }
+  fb.style.display='block';
+  nxt.style.display='inline-flex';
+  updateUI();
+}
+
+function nextQ(){
+  if(qState.lives<=0){showGameOver();return;}
+  qState.cur++;
+  renderQuestion();
+}
+
+function updateQuizLives(){
+  const h='❤️'.repeat(qState.lives)+'🖤'.repeat(3-qState.lives);
+  document.getElementById('quiz-lives').textContent=h;
+}
+
+async function saveScoreToFirebase(){
+  try{
+    const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js');
+    const { getFirestore, collection, addDoc } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
+    const firebaseConfig={
+      apiKey:"AIzaSyCBnBvRWlbKp-_ulZRKbIqtmludKB9ZLRY",
+      authDomain:"ai-tutor-86558.firebaseapp.com",
+      projectId:"ai-tutor-86558",
+      storageBucket:"ai-tutor-86558.firebasestorage.app",
+      messagingSenderId:"745192305658",
+      appId:"1:745192305658:web:fae3d83fa83309d1ccea43"
+    };
+    const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    await addDoc(collection(db,'scores'),{
+      name: state.name,
+      studentClass: state.cls || '',
+      level: qState.lvlId,         // store as number 1-17
+      levelName: qState.lvlName,
+      score: qState.score,
+      total: qState.qs.length,
+      language: (window.currentLang || 'en'),
+      timestamp: new Date().toISOString()
+    });
+    console.log('Score saved to Firebase ✅');
+  } catch(e){
+    console.error('Firebase save error:',e);
+  }
+}
+
+function showResult(){
+  document.getElementById('quiz-prog').style.width='100%';
+  const total=qState.qs.length;
+  const pass=qState.score>=Math.ceil(total*0.6);
+  if(pass){
+    state.completed[qState.lvlId]=true;
+    state.lvlsDone++;
+    state.streak=(state.streak||0)+1;
+    toast('Level completed! +'+qState.totalXp+' XP 🔥 Streak: '+state.streak);
+  }
+  state.totalAns=(state.totalAns||0)+qState.totalAns;
+  state.totalCorrect=(state.totalCorrect||0)+qState.totalCorrect;
+  updateUI();
+  saveProgress();
+  // Save to Firebase so teacher dashboard gets updated
+  saveScoreToFirebase();
+  const icons={0:'😅',1:'💪',2:'🙂',3:'😊',4:'🎉',5:'🏆'};
+  const icon=icons[Math.min(qState.score,5)]||'🏆';
+  const titles=['Keep Trying!','Getting There!','Good Job!','Well Done!','Great Work!','Perfect! 🦊'];
+  const title=titles[Math.min(qState.score,5)];
+  document.getElementById('quiz-body').innerHTML=`
+    <div class="result-screen-wrap">
+      <div class="result-trophy">${icon}</div>
+      <div class="result-title">${title}</div>
+      <div style="color:var(--text-muted);margin-bottom:8px;">${qState.lvlName}</div>
+      <div class="result-score">${qState.score}/${total}</div>
+      <div class="result-xp">+${qState.totalXp} XP Earned ⚡</div>
+      <div class="result-badge">${pass?'🏅 Level Completed!':'📚 Keep Practicing'}</div>
+      ${pass?'<p style="color:#81C784;font-size:0.9rem;margin-bottom:16px;">Next level unlocked! 🔓</p>':'<p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:16px;">Score ≥60% to unlock next level.</p>'}
+      <div class="result-actions">
+        <button class="cta-btn" onclick="exitQuiz()">🏠 Dashboard</button>
+        <button class="cta-btn" style="background:linear-gradient(135deg,#1565C0,#2196F3);" onclick="launchQuiz(${qState.lvlId})">🔄 Try Again</button>
+        ${pass&&qState.lvlId<17?`<button class="cta-btn" style="background:linear-gradient(135deg,#2E7D32,#4CAF50);" onclick="launchQuiz(${qState.lvlId+1})">Next Level ›</button>`:''}
+      </div>
+    </div>
+  `;
+}
+
+function showGameOver(){
+  document.getElementById('quiz-body').innerHTML=`
+    <div class="gameover-wrap">
+      <div style="font-size:70px;margin-bottom:16px;animation:foxBounce 2s ease-in-out infinite;">💔</div>
+      <div class="result-title">Out of Lives!</div>
+      <p style="color:var(--text-muted);margin:12px 0 24px;">Don't give up — the fox never stops learning!</p>
+      <div class="result-actions">
+        <button class="cta-btn" onclick="exitQuiz()">🏠 Dashboard</button>
+        <button class="cta-btn" style="background:linear-gradient(135deg,var(--fox-deep),var(--fox-orange));" onclick="launchQuiz(${qState.lvlId})">🔄 Try Again</button>
+      </div>
+    </div>
+  `;
+}
+
+function exitQuiz(){
+  showView('dashboard');
+  renderDashboard();
+}
+
+// ====== DASHBOARD RENDER ======
+function renderDashboard(){
+  const groups={beginner:[],intermediate:[],advanced:[],expert:[]};
+  SYLLABUS.forEach(s=>{if(groups[s.level]) groups[s.level].push(s);});
+  Object.entries(groups).forEach(([lvl,items])=>{
+    const grid=document.getElementById('levels-grid-'+lvl);
+    if(!grid) return;
+    grid.innerHTML=items.map(s=>{
+      const done=state.completed[s.id];
+      const prevDone=s.id===1||state.completed[s.id-1];
+      const locked=!done&&!prevDone;
+      const col=LEVEL_COLORS[s.level]||'var(--fox-orange)';
+      return `<div class="level-card ${locked?'locked':''}" style="--lc:${col}">
+        <div class="level-card-header">
+          <div class="level-num" style="background:${col}20;border-color:${col}50;color:${col}">${s.id}</div>
+          <div>
+            <div class="level-name">${s.name}</div>
+            <div class="level-tag">${LEVEL_EMOJIS[s.level]} ${s.level.toUpperCase()} • ${s.xp} XP</div>
+          </div>
+        </div>
+        <div class="level-card-topics">
+          ${s.topics.slice(0,4).map(t=>`<span class="topic-chip">${t.length>22?t.substring(0,22)+'…':t}</span>`).join('')}
+          ${s.topics.length>4?`<span class="topic-chip">+${s.topics.length-4} more</span>`:''}
+        </div>
+        <div class="level-card-footer">
+          <span class="level-xp">⚡ ${s.xp} XP</span>
+          ${done?'<span class="level-done-mark" title="Completed">✅</span>':
+            locked?'<span style="color:var(--text-muted);font-size:0.8rem;">🔒 Locked</span>':
+            `<button class="level-start-btn" onclick="launchQuiz(${s.id})">Start ›</button>`}
+        </div>
+      </div>`;
+    }).join('');
+  });
+}
+
+function renderSyllabus(){
+  const syl=document.getElementById('syllabus-content');
+  if(!syl) return;
+  const lvls=[['beginner','🌱 Beginner Level (Foundations)'],['intermediate','🔷 Intermediate Level (Core ML)'],['advanced','⚡ Advanced Level (Deep Learning & AI)'],['expert','🚀 Expert Level (Modern AI & Industry)']];
+  syl.innerHTML=lvls.map(([lvl,title])=>`
+    <div class="syllabus-section">
+      <div class="syllabus-section-title syl-${lvl}">${title}</div>
+      <div class="syl-topics-grid">
+        ${SYLLABUS.filter(s=>s.level===lvl).map(s=>`
+          <div class="syl-topic-card">
+            <div class="syl-topic-num">MODULE ${s.id} • ${s.xp} XP</div>
+            <div class="syl-topic-name">${s.name}</div>
+            <ul class="syl-subtopics">
+              ${s.topics.map(t=>`<li>${t}</li>`).join('')}
+            </ul>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+// ====== UI UPDATE ======
+function updateUI(){
+  document.getElementById('sb-name').textContent='🦊 '+state.name;
+  document.getElementById('sb-class').textContent=state.cls;
+  document.getElementById('sb-xp').textContent=state.xp+' XP';
+  document.getElementById('sb-xp-fill').style.width=Math.min(100,(state.xp/5000)*100)+'%';
+  document.getElementById('sb-lvl').textContent=state.lvlsDone;
+  document.getElementById('sb-streak').textContent=state.streak;
+  document.getElementById('dash-name').textContent=state.name;
+  document.getElementById('pd-xp').textContent=state.xp;
+  document.getElementById('pd-xp-bar').style.width=Math.min(100,(state.xp/5000)*100)+'%';
+  document.getElementById('pd-done').textContent=state.lvlsDone+'/17';
+  document.getElementById('pd-done-bar').style.width=((state.lvlsDone/17)*100)+'%';
+  const acc=state.totalAns>0?Math.round((state.totalCorrect/state.totalAns)*100):0;
+  document.getElementById('pd-correct').textContent=acc+'%';
+  document.getElementById('pd-acc-bar').style.width=acc+'%';
+  document.getElementById('mob-xp').textContent=state.xp+' XP';
+  document.getElementById('pd-streak').textContent=state.streak||0;
+  document.getElementById('pd-streak-bar').style.width=Math.min(100,((state.streak||0)/17)*100)+'%';
+  // Update nav badges
+  SYLLABUS.forEach(s=>{
+    const nav=document.getElementById('nav-lv'+s.id);
+    if(!nav) return;
+    nav.querySelectorAll('.level-badge').forEach(b=>b.remove());
+    const badge=document.createElement('span');
+    badge.className='level-badge '+(state.completed[s.id]?'badge-done':(!state.completed[s.id-1]&&s.id>1)?'badge-locked':('badge-'+s.level));
+    badge.textContent=state.completed[s.id]?'✅':((!state.completed[s.id-1]&&s.id>1)?'🔒':s.level.substring(0,5).toUpperCase());
+    nav.appendChild(badge);
+  });
+}
+
+// ====== AI TUTOR CHAT ======
+function initChat(){
+  const area=document.getElementById('chat-area');
+  area.innerHTML='';
+  addAIMsg(`Hi ${state.name}! 🦊 I'm Fox, your AI tutor! I can teach you **anything** about AI, Machine Learning, Deep Learning, Python, NLP, Computer Vision, and every topic in your syllabus.\n\nAsk me to **explain concepts**, give **code examples**, **quiz you**, or help with **projects**. No question is too simple or too advanced!\n\nWhat would you like to learn today?`);
+}
+
+function addAIMsg(text){
+  const area=document.getElementById('chat-area');
+  const div=document.createElement('div');
+  div.className='chat-msg ai';
+  div.innerHTML=`<div class="msg-avatar">🦊</div><div class="msg-bubble">${formatMsg(text)}</div>`;
+  area.appendChild(div);
+  area.scrollTop=area.scrollHeight;
+  state.chatHistory.push({role:'assistant',content:text});
+}
+
+function addUserMsg(text){
+  const area=document.getElementById('chat-area');
+  const div=document.createElement('div');
+  div.className='chat-msg user';
+  div.innerHTML=`<div class="msg-bubble">${escapeHtml(text)}</div><div class="msg-avatar" style="background:linear-gradient(135deg,var(--fox-deep),var(--fox-orange));">👤</div>`;
+  area.appendChild(div);
+  area.scrollTop=area.scrollHeight;
+  state.chatHistory.push({role:'user',content:text});
+}
+
+function addTyping(){
+  const area=document.getElementById('chat-area');
+  const div=document.createElement('div');
+  div.className='chat-msg ai typing-indicator';
+  div.id='typing-msg';
+  div.innerHTML=`<div class="msg-avatar">🦊</div><div class="msg-bubble"><div class="dot-wave"><span></span><span></span><span></span></div></div>`;
+  area.appendChild(div);
+  area.scrollTop=area.scrollHeight;
+}
+
+function removeTyping(){
+  const t=document.getElementById('typing-msg');
+  if(t) t.remove();
+}
+
+function formatMsg(text){
+  // Convert markdown-like formatting to HTML
+  return text
+    .replace(/```(\w*)\n([\s\S]*?)```/g,(m,lang,code)=>`<pre><code>${escapeHtml(code.trim())}</code></pre>`)
+    .replace(/`([^`]+)`/g,'<code>$1</code>')
+    .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g,'<em>$1</em>')
+    .replace(/^### (.+)$/gm,'<h4>$1</h4>')
+    .replace(/^## (.+)$/gm,'<h4>$1</h4>')
+    .replace(/^# (.+)$/gm,'<h4>$1</h4>')
+    .replace(/^\* (.+)$/gm,'<li>$1</li>')
+    .replace(/^- (.+)$/gm,'<li>$1</li>')
+    .replace(/^(\d+)\. (.+)$/gm,'<li>$2</li>')
+    .replace(/(<li>[\s\S]*?<\/li>)/g,'<ul>$1</ul>')
+    .replace(/<\/ul>\s*<ul>/g,'')
+    .replace(/\n\n/g,'</p><p>')
+    .replace(/\n/g,'<br>')
+    .replace(/^(.)/,'<p>$1').replace(/(.)$/,'$1</p>');
+}
+
+function escapeHtml(t){
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ============================================================
+// 🦊 FOX KNOWLEDGE BASE — Complete AI/ML built-in dataset
+// ============================================================
+const KB = [
+  { keys:['what is ai','what is artificial intelligence','define ai','ai meaning','ai stands for'],
+    answer:`## 🦊 What is Artificial Intelligence (AI)?
+
+**Artificial Intelligence (AI)** is the simulation of human intelligence processes by computer systems — enabling machines to **learn**, **reason**, **problem-solve**, **perceive**, and **understand language**.
+
+### 🧠 Types of AI
+- **ANI (Narrow AI)** ✅ Exists today — one specific task (ChatGPT, Siri, face recognition)
+- **AGI (General AI)** ❌ Not yet — can do any cognitive task a human can
+- **ASI (Super AI)** ❌ Theoretical — surpasses human intelligence in all areas
+
+### 🌍 Real-Life Examples
+- 📱 Siri/Google Assistant — voice understanding
+- 🎬 Netflix/YouTube — recommendations
+- 🚗 Tesla Autopilot — self-driving
+- 🏥 Medical AI — disease detection
+- 📧 Gmail — spam filtering
+
+### 🔑 Core Branches
+\`\`\`
+AI
+├── Machine Learning → Supervised, Unsupervised, RL
+├── Deep Learning (Neural Networks)
+├── Natural Language Processing (NLP)
+├── Computer Vision
+└── Robotics
+\`\`\`
+
+### 📅 Key Milestones
+| Year | Event |
+|------|-------|
+| 1950 | Turing Test proposed |
+| 1956 | "AI" term coined at Dartmouth |
+| 1997 | Deep Blue beats chess champion |
+| 2012 | Deep Learning revolution (AlexNet) |
+| 2022 | ChatGPT launches — AI goes mainstream |
+
+🦊 *Every AI you use today is ANI — narrow but incredibly powerful!*` },
+
+  { keys:['types of ai','ani agi asi','narrow intelligence','general intelligence','super intelligence','agi','asi'],
+    answer:`## 🦊 Types of AI — ANI, AGI, ASI
+
+### 1️⃣ ANI — Artificial Narrow Intelligence
+- **Status**: ✅ EXISTS TODAY
+- Designed for ONE specific task
+- Examples: Chess engines, ChatGPT, face recognition, spam filters, recommendation systems
+
+### 2️⃣ AGI — Artificial General Intelligence
+- **Status**: ❌ Does NOT exist yet
+- Can perform ANY intellectual task a human can
+- Learns any skill from scratch, transfers knowledge across domains
+
+### 3️⃣ ASI — Artificial Super Intelligence
+- **Status**: ❌ Theoretical only
+- Surpasses human intelligence in ALL domains
+- Active AI safety research topic
+
+### 📊 Comparison
+| Feature | ANI | AGI | ASI |
+|---------|-----|-----|-----|
+| Task scope | Single task | Any task | All tasks + beyond |
+| Exists? | ✅ Yes | ❌ No | ❌ No |
+| Examples | ChatGPT, Siri | — | — |
+
+🦊 *When someone says "AI will take over" they mean ASI — which doesn't exist. Today's AI (ANI) is a tool you control!*` },
+
+  { keys:['what is machine learning','machine learning basics','ml basics','define ml','what is ml'],
+    answer:`## 🦊 What is Machine Learning (ML)?
+
+**Machine Learning** is AI that **learns from data automatically** without being explicitly programmed for each task.
+
+### 📌 Traditional vs ML
+\`\`\`
+Traditional:   Data + Rules  → Output
+ML:            Data + Output → Rules (the model!)
+\`\`\`
+
+### 🔑 The 3 Types of ML
+
+**1. Supervised Learning** — Labeled data (input + correct answer)
+- Classification: Spam/not-spam, cat/dog
+- Regression: House price, temperature
+- Algorithms: Linear Regression, Decision Trees, SVM, Neural Networks
+
+**2. Unsupervised Learning** — No labels, find hidden patterns
+- Clustering: Customer segments (K-Means)
+- Dimensionality Reduction: PCA
+- Algorithms: K-Means, DBSCAN, PCA
+
+**3. Reinforcement Learning** — Trial and error with rewards
+- Examples: AlphaGo, robotics, self-driving cars
+- Algorithms: Q-Learning, Deep Q-Networks
+
+### 🛠️ Simple ML Example
+\`\`\`python
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
+X = np.array([[1],[2],[3],[4],[5]])  # study hours
+y = np.array([45, 55, 65, 75, 85])  # exam scores
+
+model = LinearRegression()
+model.fit(X, y)   # TRAINING
+
+prediction = model.predict([[6]])  # PREDICTION
+print(f"6 hours → score: {prediction[0]:.0f}")
+\`\`\`
+
+🦊 *ML is like teaching a child — show enough examples and it learns the pattern!*` },
+
+  { keys:['supervised vs unsupervised','difference between supervised and unsupervised','supervised learning','unsupervised learning'],
+    answer:`## 🦊 Supervised vs Unsupervised Learning
+
+### 🎯 Supervised Learning
+- Learns from **labeled data** (every input has a known correct answer)
+- **Analogy**: Teacher gives questions WITH answer keys
+
+\`\`\`python
+from sklearn.tree import DecisionTreeClassifier
+# Labeled data: features + labels
+X = [[5.1,3.5],[4.9,3.0],[7.0,3.2]]
+y = ['setosa','setosa','versicolor']  # LABELS!
+model = DecisionTreeClassifier().fit(X, y)
+print(model.predict([[5.0,3.4]]))  # ['setosa']
+\`\`\`
+
+**Tasks**: Classification (categories) & Regression (numbers)
+**Algorithms**: Linear/Logistic Regression, SVM, Trees, Neural Networks
+
+---
+
+### 🔍 Unsupervised Learning
+- Finds **hidden patterns** in **unlabeled** data
+- **Analogy**: Sorting books into groups without knowing categories
+
+\`\`\`python
+from sklearn.cluster import KMeans
+import numpy as np
+X = np.array([[1,2],[1.5,1.8],[5,8],[8,8]])
+kmeans = KMeans(n_clusters=2, random_state=0)
+labels = kmeans.fit_predict(X)
+print(labels)  # [0,0,1,1] — found 2 clusters!
+\`\`\`
+
+**Tasks**: Clustering, Dimensionality Reduction, Association
+**Algorithms**: K-Means, PCA, DBSCAN, Apriori
+
+---
+
+### 📊 Quick Comparison
+| Feature | Supervised | Unsupervised |
+|---------|-----------|--------------|
+| Data | Labeled | Unlabeled |
+| Goal | Predict known output | Discover patterns |
+| Examples | Spam filter, prices | Customer segments |
+| Evaluation | Accuracy, F1 | Silhouette score |
+
+🦊 *Rule: Have labels? → Supervised. No labels? → Unsupervised!*` },
+
+  { keys:['neural network','what is neural network','how neural networks work','ann','neurons','deep learning basics'],
+    answer:`## 🦊 Neural Networks Explained
+
+A **Neural Network** (ANN) is inspired by the human brain — layers of connected **neurons** that learn to transform inputs into outputs.
+
+### 🏗️ Architecture
+\`\`\`
+Input Layer → Hidden Layers → Output Layer
+  [x1,x2,x3]  →  [neurons]  →  [prediction]
+\`\`\`
+
+### ⚙️ How One Neuron Works
+\`\`\`python
+import numpy as np
+
+def neuron(inputs, weights, bias):
+    z = np.dot(inputs, weights) + bias   # weighted sum
+    return max(0, z)                      # ReLU activation
+
+inputs  = [0.5, 0.8, 0.2]
+weights = [0.4, 0.6, 0.1]
+bias    = 0.1
+print(neuron(inputs, weights, bias))     # 0.84
+\`\`\`
+
+### ⚡ Activation Functions
+| Function | Formula | Use |
+|----------|---------|-----|
+| **ReLU** | max(0,x) | Hidden layers (most common) |
+| **Sigmoid** | 1/(1+e^-x) | Binary output (0-1) |
+| **Softmax** | e^x/Σe^x | Multi-class output |
+| **Tanh** | (e^x-e^-x)/(e^x+e^-x) | RNNs |
+
+### 🔄 Training Steps
+\`\`\`
+1. Forward Pass  → Input → Prediction
+2. Loss Calc     → Compare prediction vs actual (MSE, CrossEntropy)
+3. Backprop      → Calculate gradients via chain rule
+4. Update        → Gradient Descent adjusts weights
+5. Repeat        → Until convergence
+\`\`\`
+
+### 💻 Neural Net with Keras
+\`\`\`python
+from tensorflow import keras
+from tensorflow.keras import layers
+
+model = keras.Sequential([
+    layers.Dense(64, activation='relu', input_shape=(10,)),
+    layers.Dense(32, activation='relu'),
+    layers.Dropout(0.3),
+    layers.Dense(1, activation='sigmoid')
+])
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+model.fit(X_train, y_train, epochs=20, validation_split=0.2)
+\`\`\`
+
+🦊 *Neurons vote together — 64 neurons in a layer learn 64 different features!*` },
+
+  { keys:['gradient descent','backpropagation','backprop','how gradient descent works','learning rate','optimization'],
+    answer:`## 🦊 Gradient Descent & Backpropagation
+
+### 📉 What is Gradient Descent?
+An optimization algorithm that **minimizes the loss function** by moving weights in the direction that reduces error.
+
+**Analogy**: You're blindfolded on a hilly terrain. Feel the slope → step downhill. Repeat until you reach the valley (minimum loss).
+
+### 📐 Update Rule
+\`\`\`
+w = w - α × ∂L/∂w
+
+α = learning rate (step size)
+∂L/∂w = gradient (how much does loss change per weight)
+\`\`\`
+
+### 💻 Gradient Descent from Scratch
+\`\`\`python
+import numpy as np
+
+X = np.array([1,2,3,4,5], dtype=float)
+y = np.array([2,4,6,8,10], dtype=float)
+w, b = 0.0, 0.0
+lr = 0.01
+
+for epoch in range(1000):
+    y_pred = w * X + b
+    loss = np.mean((y_pred - y)**2)        # MSE
+    dw = np.mean(2 * (y_pred - y) * X)    # gradient w
+    db = np.mean(2 * (y_pred - y))         # gradient b
+    w -= lr * dw
+    b -= lr * db
+
+print(f"w={w:.2f}, b={b:.2f}")  # w≈2.0, b≈0.0
+\`\`\`
+
+### 🔀 Types
+| Type | Data per update | Speed | Stability |
+|------|----------------|-------|-----------|
+| Batch GD | ALL data | Slow | Very stable |
+| SGD | 1 sample | Fast | Noisy |
+| Mini-Batch GD | 32-256 samples | Balanced | Best for DL |
+
+### ⚙️ Popular Optimizers
+- **Adam** = Momentum + RMSProp (most popular, lr=0.001)
+- **SGD + Momentum** = Classic, widely used
+- **AdaGrad** = Adaptive per-parameter learning rate
+
+### 🔙 Backpropagation
+Calculates gradients **backwards** through the network using the **chain rule**:
+\`\`\`
+Output → Hidden Layer 2 → Hidden Layer 1 → Input
+        ← gradients flow via chain rule ←
+\`\`\`
+
+🦊 *Learning rate tip: 0.001 with Adam is the golden default. Too high → overshoots. Too low → too slow!*` },
+
+  { keys:['linear regression','what is linear regression','regression analysis'],
+    answer:`## 🦊 Linear Regression
+
+Predicts a **continuous numerical output** by fitting the best straight line through data.
+
+### 📐 Equation
+\`\`\`
+y = w₁x₁ + w₂x₂ + ... + b
+Simple: y = wx + b  (slope × input + intercept)
+\`\`\`
+
+### 💻 Complete Example
+\`\`\`python
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, r2_score
+import numpy as np
+
+X = np.array([[1],[2],[3],[4],[5],[6],[7],[8]])
+y = np.array([45,55,60,65,70,78,85,90])
+
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.2,random_state=42)
+
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+y_pred = model.predict(X_test)
+print(f"Slope:     {model.coef_[0]:.2f}")
+print(f"Intercept: {model.intercept_:.2f}")
+print(f"R² Score:  {r2_score(y_test,y_pred):.3f}")  # 1.0 = perfect
+print(f"RMSE:      {mean_squared_error(y_test,y_pred)**0.5:.2f}")
+
+# Predict new value
+print(f"9 hours → {model.predict([[9]])[0]:.1f} score")
+\`\`\`
+
+### 📊 Metrics
+| Metric | Formula | Meaning |
+|--------|---------|---------|
+| **MAE** | mean(|ŷ-y|) | Average error magnitude |
+| **MSE** | mean((ŷ-y)²) | Penalizes large errors |
+| **R²** | 1 - SSres/SStot | 0-1, how well model fits |
+
+🦊 *R² > 0.8 is good. R² = 1.0 is perfect fit (check for overfitting!)*` },
+
+  { keys:['logistic regression','binary classification'],
+    answer:`## 🦊 Logistic Regression
+
+Despite the name, it's a **classification algorithm** — predicts the **probability** of a binary outcome (0 or 1).
+
+### 📐 Math
+\`\`\`
+Linear:   z = wx + b
+Sigmoid:  p = 1 / (1 + e^(-z))  → outputs 0.0 to 1.0
+Decision: if p >= 0.5 → Class 1, else → Class 0
+\`\`\`
+
+### 💻 Example
+\`\`\`python
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report
+from sklearn.datasets import load_breast_cancer
+
+data = load_breast_cancer()
+X, y = data.data, data.target
+
+from sklearn.model_selection import train_test_split
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.2,random_state=42)
+
+model = LogisticRegression(max_iter=10000)
+model.fit(X_train, y_train)
+
+print(f"Accuracy: {model.score(X_test,y_test):.3f}")
+print(classification_report(y_test, model.predict(X_test)))
+\`\`\`
+
+### 📊 Confusion Matrix
+\`\`\`
+                Predicted 0    Predicted 1
+Actual 0    [  True Neg   |  False Pos  ]
+Actual 1    [  False Neg  |  True Pos   ]
+
+Accuracy  = (TP+TN)/Total
+Precision = TP/(TP+FP)  ← how precise are positive predictions?
+Recall    = TP/(TP+FN)  ← how many true positives found?
+F1-Score  = 2×Precision×Recall/(Precision+Recall)
+\`\`\`
+
+🦊 *Always start any classification task with Logistic Regression as baseline!*` },
+
+  { keys:['decision tree','random forest','ensemble','what is decision tree'],
+    answer:`## 🦊 Decision Trees & Random Forest
+
+### 🌳 Decision Tree
+Splits data on feature conditions to form a tree of decisions leading to predictions.
+
+\`\`\`python
+from sklearn.tree import DecisionTreeClassifier, export_text
+from sklearn.datasets import load_iris
+data = load_iris()
+X, y = data.data, data.target
+
+model = DecisionTreeClassifier(max_depth=3, random_state=42)
+model.fit(X, y)
+print(export_text(model, feature_names=list(data.feature_names)))
+print(f"Accuracy: {model.score(X,y):.3f}")
+\`\`\`
+
+**Key concepts:**
+- **Gini Impurity**: Measures node purity (lower = better split)
+- **Max Depth**: Limits tree depth to prevent overfitting
+- **Pruning**: Removes unimportant branches
+
+---
+
+### 🌲 Random Forest = Many Trees Voting Together
+\`\`\`python
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.3,random_state=42)
+
+rf = RandomForestClassifier(n_estimators=100, max_depth=5, random_state=42)
+rf.fit(X_train, y_train)
+print(f"RF Accuracy: {rf.score(X_test,y_test):.3f}")
+
+# Feature importance
+import pandas as pd
+fi = pd.Series(rf.feature_importances_, index=data.feature_names).sort_values(ascending=False)
+print(fi)
+\`\`\`
+
+### 📊 Comparison
+| Aspect | Decision Tree | Random Forest |
+|--------|--------------|---------------|
+| Variance | High (overfits) | Low (ensemble) |
+| Interpretability | ✅ High | ❌ Black box |
+| Performance | Moderate | High |
+| Speed | Fast | Slower |
+
+🦊 *Random Forest almost always beats a single Decision Tree — more trees = more wisdom!*` },
+
+  { keys:['svm','support vector machine','kernel trick'],
+    answer:`## 🦊 Support Vector Machine (SVM)
+
+Finds the **optimal hyperplane** with **maximum margin** between classes.
+
+**Key ideas:**
+- **Support Vectors**: Points closest to the decision boundary
+- **Margin**: Distance between boundary and support vectors — SVM maximizes this
+- **Kernel Trick**: Maps data to higher dimensions for non-linear separation
+
+\`\`\`python
+from sklearn.svm import SVC
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.datasets import make_classification
+
+X, y = make_classification(n_samples=200, n_features=2, random_state=42)
+
+# Always scale for SVM!
+svm = Pipeline([
+    ('scaler', StandardScaler()),
+    ('svm', SVC(kernel='rbf', C=1.0, gamma='scale'))
+])
+svm.fit(X[:160], y[:160])
+print(f"Accuracy: {svm.score(X[160:],y[160:]):.3f}")
+\`\`\`
+
+### 🔑 Kernels
+| Kernel | When to Use |
+|--------|-------------|
+| **Linear** | Linearly separable data |
+| **RBF** | Non-linear (most popular) |
+| **Polynomial** | Polynomial boundaries |
+
+**C parameter**: High C → small margin, few errors. Low C → large margin, more errors.
+
+🦊 *SVM shines on small-medium datasets and high-dimensional data like text!*` },
+
+  { keys:['k means','kmeans','clustering','k-means','what is clustering'],
+    answer:`## 🦊 K-Means Clustering
+
+Groups data into **K clusters** where each point belongs to the cluster with the **nearest centroid**.
+
+### 🔄 Algorithm
+\`\`\`
+1. Initialize K random centroids
+2. Assign each point to nearest centroid
+3. Recalculate centroids (mean of cluster)
+4. Repeat 2-3 until convergence
+\`\`\`
+
+### 💻 Implementation
+\`\`\`python
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+import numpy as np
+
+X = np.random.randn(300, 2) * np.array([1,1])
+X[:100] += [0,0]    # cluster 1
+X[100:200] += [5,5] # cluster 2
+X[200:] += [0,5]    # cluster 3
+
+scaler = StandardScaler()
+X_s = scaler.fit_transform(X)
+
+# Elbow method to find best K
+inertias = []
+for k in range(1,11):
+    km = KMeans(n_clusters=k, random_state=42, n_init=10)
+    km.fit(X_s)
+    inertias.append(km.inertia_)
+# Plot inertias — look for the "elbow"
+
+kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
+labels = kmeans.fit_predict(X_s)
+print("Cluster distribution:", np.unique(labels, return_counts=True))
+\`\`\`
+
+**Limitations:** Must choose K, sensitive to outliers, assumes spherical clusters.
+
+**Alternatives:** DBSCAN (arbitrary shapes), Hierarchical (no K needed)
+
+🦊 *K-Means is perfect for customer segmentation and document grouping!*` },
+
+  { keys:['pca','principal component analysis','dimensionality reduction'],
+    answer:`## 🦊 PCA — Principal Component Analysis
+
+Reduces high-dimensional data to fewer dimensions while **preserving maximum variance**.
+
+### 🎯 Why PCA?
+- Remove redundant correlated features
+- Speed up ML training
+- Visualize high-D data in 2D/3D
+- Reduce noise and overfitting
+
+### 💻 Example
+\`\`\`python
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+from sklearn.datasets import load_digits
+
+digits = load_digits()
+X = digits.data  # 1797 samples × 64 features
+
+# Must scale first!
+X_s = StandardScaler().fit_transform(X)
+
+# Reduce to 2D for visualization
+pca2 = PCA(n_components=2)
+X_2d = pca2.fit_transform(X_s)
+print(f"64 → 2 dimensions")
+print(f"Variance kept: {pca2.explained_variance_ratio_.sum():.1%}")
+
+# Keep 95% of variance automatically
+pca95 = PCA(n_components=0.95)
+X_95 = pca95.fit_transform(X_s)
+print(f"Components for 95% variance: {pca95.n_components_}")
+\`\`\`
+
+### 📊 How It Works
+\`\`\`
+1. Standardize features (zero mean, unit variance)
+2. Compute covariance matrix
+3. Find eigenvectors (principal components = new axes)
+4. Sort by eigenvalue (variance explained)
+5. Project data onto top K components
+\`\`\`
+
+🦊 *Keep enough components to explain 90-95% variance — that's usually much less than original features!*` },
+
+  { keys:['cnn','convolutional neural network','computer vision','image classification','object detection','yolo'],
+    answer:`## 🦊 CNN — Convolutional Neural Networks
+
+Specialized neural networks for processing **images and video** — they automatically learn spatial features.
+
+### 🏗️ Architecture
+\`\`\`
+Image → Conv → Pool → Conv → Pool → Flatten → Dense → Output
+\`\`\`
+
+### ⚙️ Key Layers
+- **Conv2D**: Applies filters to extract features (edges, textures, shapes)
+- **MaxPooling**: Reduces size, keeps dominant features
+- **BatchNorm**: Stabilizes training
+- **Dropout**: Prevents overfitting
+- **Dense**: Final classification
+
+### 💻 CNN with Keras
+\`\`\`python
+from tensorflow.keras import layers, models
+
+model = models.Sequential([
+    layers.Conv2D(32,(3,3),activation='relu',input_shape=(32,32,3)),
+    layers.MaxPooling2D(2,2),
+    layers.Conv2D(64,(3,3),activation='relu'),
+    layers.MaxPooling2D(2,2),
+    layers.Conv2D(128,(3,3),activation='relu'),
+    layers.Flatten(),
+    layers.Dense(256,activation='relu'),
+    layers.Dropout(0.5),
+    layers.Dense(10,activation='softmax')  # 10 classes
+])
+model.compile(optimizer='adam',loss='sparse_categorical_crossentropy',metrics=['accuracy'])
+\`\`\`
+
+### 🚀 Transfer Learning (Recommended!)
+\`\`\`python
+base = tf.keras.applications.MobileNetV2(
+    weights='imagenet', include_top=False, input_shape=(224,224,3))
+base.trainable = False  # freeze pre-trained weights
+
+model = tf.keras.Sequential([
+    base,
+    tf.keras.layers.GlobalAveragePooling2D(),
+    tf.keras.layers.Dense(256, activation='relu'),
+    tf.keras.layers.Dense(num_classes, activation='softmax')
+])
+\`\`\`
+
+### 🏆 Famous CNNs
+| Model | Year | Key Feature |
+|-------|------|------------|
+| AlexNet | 2012 | DL revolution |
+| VGG-16 | 2014 | Deep & simple |
+| ResNet-50 | 2015 | Skip connections |
+| MobileNet | 2017 | Lightweight |
+| EfficientNet | 2019 | Best accuracy/cost |
+
+🦊 *For any image task, start with Transfer Learning (MobileNet/EfficientNet) — saves weeks!*` },
+
+  { keys:['nlp','natural language processing','tokenization','word embedding','bert','what is nlp'],
+    answer:`## 🦊 NLP — Natural Language Processing
+
+Enables computers to **understand and generate human language**.
+
+### 🔄 NLP Pipeline
+\`\`\`
+Raw Text → Tokenization → Cleaning → Normalization → Encoding → Model
+\`\`\`
+
+### 1️⃣ Preprocessing
+\`\`\`python
+import nltk
+from nltk.tokenize import word_tokenize
+from nltk.stem import WordNetLemmatizer
+from nltk.corpus import stopwords
+
+text = "The foxes are running quickly through AI forests!"
+tokens = word_tokenize(text.lower())
+stop = set(stopwords.words('english'))
+filtered = [t for t in tokens if t.isalpha() and t not in stop]
+# → ['foxes','running','quickly','ai','forests']
+
+lemma = WordNetLemmatizer()
+lemmatized = [lemma.lemmatize(t,'v') for t in filtered]
+# → ['fox','run','quickly','ai','forest']
+\`\`\`
+
+### 2️⃣ TF-IDF
+\`\`\`python
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+corpus = ["Fox learns AI fast","AI transforms the world","Deep learning rules"]
+tfidf = TfidfVectorizer(max_features=10)
+X = tfidf.fit_transform(corpus)
+print(X.toarray())
+\`\`\`
+
+### 3️⃣ BERT (Transformers)
+\`\`\`python
+from transformers import pipeline
+classifier = pipeline("sentiment-analysis")
+print(classifier("I love EthicaLearn AI!"))
+# [{'label': 'POSITIVE', 'score': 0.9998}]
+\`\`\`
+
+### 📊 NLP Evolution
+\`\`\`
+Rules → Bag-of-Words → TF-IDF → Word2Vec → RNN/LSTM → Transformers (BERT, GPT)
+\`\`\`
+
+🦊 *Transformers (2017) revolutionized NLP — "Attention is All You Need" is the most impactful AI paper ever!*` },
+
+  { keys:['transformer','attention mechanism','bert','gpt','self attention','what is transformer'],
+    answer:`## 🦊 Transformers & Attention Mechanism
+
+The architecture behind GPT, BERT, and all modern AI. Introduced in 2017: *"Attention is All You Need"*.
+
+### 🔑 Key Idea: Self-Attention
+Every token attends to every other token **simultaneously** — understanding context across the entire sequence.
+
+\`\`\`python
+import numpy as np
+
+def attention(Q, K, V):
+    d_k = Q.shape[-1]
+    scores = Q @ K.T / np.sqrt(d_k)           # similarity scores
+    weights = np.exp(scores) / np.exp(scores).sum(-1, keepdims=True)  # softmax
+    return weights @ V  # weighted combination of values
+
+Q = np.random.randn(4, 8)  # 4 tokens, 8-dim
+K = np.random.randn(4, 8)
+V = np.random.randn(4, 8)
+output = attention(Q, K, V)
+\`\`\`
+
+### 🏗️ Architecture
+\`\`\`
+Encoder: Input Embed → Positional Enc → Multi-Head Attention → FFN → Add&Norm
+Decoder: Output Embed → Masked Attention → Cross-Attention → FFN → Output
+\`\`\`
+
+### 🏆 Major Models
+| Model | Company | Best For |
+|-------|---------|----------|
+| **BERT** | Google | Text understanding, Q&A |
+| **GPT-4** | OpenAI | Generation, chatbots |
+| **Claude** | Anthropic | Reasoning, long context |
+| **LLaMA 3** | Meta | Open source local models |
+| **Gemini** | Google | Multimodal tasks |
+
+### 💻 Using HuggingFace
+\`\`\`python
+from transformers import pipeline
+
+# Sentiment Analysis
+clf = pipeline("sentiment-analysis")
+print(clf("FoxLearn is amazing!"))  # POSITIVE 99.9%
+
+# Text Generation
+gen = pipeline("text-generation", model="gpt2")
+print(gen("Artificial Intelligence is", max_length=50))
+
+# Question Answering
+qa = pipeline("question-answering")
+print(qa(question="What is AI?",
+         context="AI is the simulation of human intelligence by machines."))
+\`\`\`
+
+🦊 *Attention mechanism = let every word look at every other word. Simple idea, revolutionary results!*` },
+
+  { keys:['rag','retrieval augmented generation','what is rag'],
+    answer:`## 🦊 RAG — Retrieval Augmented Generation
+
+**RAG** enhances LLMs by **retrieving relevant documents** from a knowledge base before generating answers.
+
+### 🤔 Why RAG?
+Without RAG, LLMs: outdated knowledge, hallucinate facts, don't know private data.
+With RAG: up-to-date, factual, works with your own documents.
+
+### 🔄 RAG Pipeline
+\`\`\`
+INDEXING:
+Documents → Chunking (1000 tokens) → Embedding → Vector Store
+
+QUERYING:
+Question → Embed → Similarity Search → Retrieve Top-K chunks
+         → chunks + question → LLM → Grounded Answer
+\`\`\`
+
+### 💻 Simple RAG
+\`\`\`python
+from langchain.document_loaders import TextLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.vectorstores import Chroma
+from langchain.chains import RetrievalQA
+from langchain.llms import OpenAI
+
+# 1. Load & chunk documents
+docs = TextLoader("knowledge.txt").load()
+chunks = RecursiveCharacterTextSplitter(
+    chunk_size=1000, chunk_overlap=200).split_documents(docs)
+
+# 2. Create vector store
+vectorstore = Chroma.from_documents(chunks, OpenAIEmbeddings())
+retriever = vectorstore.as_retriever(search_kwargs={"k": 4})
+
+# 3. RAG chain
+qa = RetrievalQA.from_chain_type(llm=OpenAI(), retriever=retriever)
+print(qa.run("What is gradient descent?"))
+\`\`\`
+
+### 📊 RAG vs Fine-tuning
+| | RAG | Fine-tuning |
+|-|-----|-------------|
+| Update knowledge | Add documents | Retrain model |
+| Cost | Low | High |
+| Hallucination | Reduced | Reduced |
+| Best for | Factual Q&A | Style/task |
+
+🦊 *RAG is how enterprise AI assistants give accurate answers about company-specific data!*` },
+
+  { keys:['generative ai','genai','llm','large language model','gpt','chatgpt','prompt engineering'],
+    answer:`## 🦊 Generative AI & LLMs
+
+**Generative AI** creates new content — text, images, code, music, video — by learning patterns from massive data.
+
+### 🧠 What are LLMs?
+Transformer-based models trained on trillions of text tokens. They predict the **next most likely token** given context.
+
+### 🏆 Major LLMs (2025)
+| Model | Company | Strengths |
+|-------|---------|-----------|
+| GPT-4o | OpenAI | General, multimodal |
+| Claude 3.5 | Anthropic | Reasoning, safety |
+| Gemini Ultra | Google | Multimodal, integration |
+| LLaMA 3.1 | Meta | Open source, local |
+
+### 🎯 Prompt Engineering
+\`\`\`python
+# Zero-shot
+"Classify as positive/negative: 'Great product!'"
+
+# Few-shot
+"""
+"Amazing!" → Positive
+"Terrible!" → Negative
+"It's okay." → ?
+"""
+
+# Chain-of-Thought
+"Solve step by step: A train goes 60km/h, needs 150km..."
+
+# Role prompting
+"You are an expert Python developer. Explain decorators."
+\`\`\`
+
+### 💻 Fine-tuning with LoRA
+\`\`\`python
+from peft import LoraConfig, get_peft_model
+from transformers import AutoModelForCausalLM
+
+model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-2-7b-hf")
+lora_config = LoraConfig(r=8, lora_alpha=32,
+    target_modules=["q_proj","v_proj"], task_type="CAUSAL_LM")
+model = get_peft_model(model, lora_config)
+model.print_trainable_parameters()  # Only ~0.1% params!
+\`\`\`
+
+### 🤖 AI Agents
+Autonomous AI systems that use LLMs + tools + memory to complete multi-step tasks.
+
+🦊 *Prompt quality = 70% of AI output quality. Master prompting and you master AI!*` },
+
+  { keys:['overfitting','underfitting','bias variance','regularization','cross validation'],
+    answer:`## 🦊 Overfitting, Underfitting & Regularization
+
+### 📊 Three Scenarios
+\`\`\`
+Underfitting      Good Fit       Overfitting
+(High Bias)      (Balanced)     (High Variance)
+Train: LOW       Train: HIGH    Train: VERY HIGH
+Test:  LOW       Test:  HIGH    Test:  LOW
+\`\`\`
+
+**Underfitting**: Model too simple → increase complexity
+**Overfitting**: Model memorizes noise → regularize or add data
+
+### 🔍 Detect with Learning Curves
+\`\`\`python
+from sklearn.model_selection import learning_curve
+import numpy as np
+
+train_sizes, train_scores, val_scores = learning_curve(
+    model, X, y, cv=5, train_sizes=np.linspace(0.1,1.0,10))
+
+train_mean = train_scores.mean(axis=1)
+val_mean   = val_scores.mean(axis=1)
+gap = train_mean[-1] - val_mean[-1]
+print(f"Train: {train_mean[-1]:.3f}, Val: {val_mean[-1]:.3f}")
+print("Overfitting!" if gap > 0.1 else "Good fit!")
+\`\`\`
+
+### 🛠️ Fix Overfitting
+\`\`\`python
+# 1. Regularization
+from sklearn.linear_model import Ridge, Lasso
+ridge = Ridge(alpha=1.0)    # L2: penalizes large weights
+lasso = Lasso(alpha=0.1)    # L1: drives weights to zero
+
+# 2. Dropout (Neural Networks)
+from tensorflow.keras import layers
+layers.Dropout(0.5)
+
+# 3. Early Stopping
+from tensorflow.keras.callbacks import EarlyStopping
+es = EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
+
+# 4. Cross-Validation
+from sklearn.model_selection import cross_val_score
+scores = cross_val_score(model, X, y, cv=5)
+print(f"CV: {scores.mean():.3f} ± {scores.std():.3f}")
+\`\`\`
+
+### 📊 K-Fold Cross Validation
+\`\`\`
+Data: [fold1|fold2|fold3|fold4|fold5]
+Run1: [TEST |train|train|train|train] → score1
+Run2: [train|TEST |train|train|train] → score2
+...
+Final = mean(score1...score5)  ← much more reliable!
+\`\`\`
+
+🦊 *Golden rule: If training accuracy >> validation accuracy → Overfitting. Add dropout, reduce depth, or get more data!*` },
+
+  { keys:['mlops','model deployment','deploy ml','docker ml','fastapi','what is mlops'],
+    answer:`## 🦊 MLOps — ML in Production
+
+**MLOps** combines ML + DevOps + Data Engineering to deploy, monitor, and maintain ML models.
+
+### 🔄 MLOps Lifecycle
+\`\`\`
+Data → EDA → Feature Eng → Train → Evaluate → Version →
+Container → Deploy → Monitor → Retrain → (repeat)
+\`\`\`
+
+### 1️⃣ Deploy with FastAPI
+\`\`\`python
+# app.py
+from fastapi import FastAPI
+from pydantic import BaseModel
+import pickle, numpy as np
+
+app = FastAPI(title="Fox ML API 🦊")
+with open("model.pkl","rb") as f: model = pickle.load(f)
+
+class Request(BaseModel):
+    features: list[float]
+
+@app.post("/predict")
+def predict(req: Request):
+    X = np.array(req.features).reshape(1,-1)
+    pred = model.predict(X)[0]
+    prob = model.predict_proba(X).max()
+    return {"prediction": int(pred), "confidence": float(prob)}
+
+# Run: uvicorn app:app --reload
+# Test: POST http://localhost:8000/predict
+\`\`\`
+
+### 2️⃣ Dockerfile
+\`\`\`dockerfile
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+EXPOSE 8000
+CMD ["uvicorn","app:app","--host","0.0.0.0","--port","8000"]
+\`\`\`
+\`\`\`bash
+docker build -t fox-ml-api .
+docker run -p 8000:8000 fox-ml-api
+\`\`\`
+
+### 3️⃣ MLflow Tracking
+\`\`\`python
+import mlflow
+with mlflow.start_run():
+    mlflow.log_param("n_estimators", 100)
+    model.fit(X_train, y_train)
+    mlflow.log_metric("accuracy", model.score(X_test,y_test))
+    mlflow.sklearn.log_model(model, "model")
+\`\`\`
+
+### 📊 MLOps Tools
+| Category | Tools |
+|----------|-------|
+| Experiments | MLflow, W&B |
+| Serving | FastAPI, TorchServe |
+| Containers | Docker, Kubernetes |
+| Cloud | AWS SageMaker, GCP Vertex AI |
+| Monitoring | Evidently, Grafana |
+
+🦊 *A model in a notebook is just an experiment. MLOps turns it into a real product!*` },
+
+  { keys:['ai ethics','responsible ai','ai bias','fairness','explainable ai','xai'],
+    answer:`## 🦊 AI Ethics & Responsible AI
+
+### ⚖️ 5 Core Principles
+1. **Fairness** — No discrimination by race, gender, age
+2. **Transparency** — Decisions must be explainable
+3. **Accountability** — Developers responsible for outcomes
+4. **Privacy** — Ethical data collection & usage
+5. **Safety** — No harm to users or society
+
+### 🎯 Types of AI Bias
+| Bias Type | Description | Example |
+|-----------|-------------|---------|
+| **Historical** | Past discrimination in training data | Amazon hiring AI (2018) |
+| **Representation** | Underrepresented groups | Facial recognition: 65% vs 99% accuracy |
+| **Proxy** | Indirect features encode protected attributes | ZIP codes as race proxy |
+
+### 🔍 Detect Bias
+\`\`\`python
+from fairlearn.metrics import demographic_parity_difference
+
+y_pred = model.predict(X_test)
+dp = demographic_parity_difference(
+    y_test, y_pred,
+    sensitive_features=X_test['gender'])
+print(f"Fairness gap: {dp:.4f}")  # 0 = perfect fairness
+\`\`\`
+
+### 🔎 Explainable AI (SHAP)
+\`\`\`python
+import shap
+
+explainer = shap.TreeExplainer(rf_model)
+shap_values = explainer.shap_values(X_test)
+shap.summary_plot(shap_values, X_test)  # global importance
+shap.force_plot(explainer.expected_value,
+               shap_values[0], X_test.iloc[0])  # single prediction
+\`\`\`
+
+### 📋 Key Regulations
+- **EU AI Act**: Risk-based regulation for AI systems
+- **GDPR**: Data privacy, right to explanation
+- **NIST AI RMF**: Risk management framework (USA)
+
+🦊 *Fair AI isn't just ethical — biased models fail catastrophically in the real world!*` },
+
+  { keys:['reinforcement learning','rl','q learning','mdp','markov decision process','what is reinforcement learning'],
+    answer:`## 🦊 Reinforcement Learning (RL)
+
+An agent learns to make decisions through **trial and error** with **rewards and penalties**.
+
+### 🎮 Core Components
+\`\`\`
+Agent       → The learner/decision maker
+Environment → World the agent interacts with
+State (s)   → Current situation
+Action (a)  → What the agent does
+Reward (r)  → Feedback signal (+good, -bad)
+Policy (π)  → Strategy mapping states to actions
+\`\`\`
+
+### 📐 Q-Learning
+\`\`\`python
+import numpy as np
+
+n_states, n_actions = 16, 4
+Q = np.zeros((n_states, n_actions))
+
+lr = 0.1      # learning rate
+gamma = 0.99  # discount factor — how much future rewards matter
+epsilon = 1.0 # exploration rate
+
+# Bellman Equation Update
+def update(Q, s, a, r, s_next):
+    Q[s,a] = Q[s,a] + lr * (r + gamma * np.max(Q[s_next]) - Q[s,a])
+    return Q
+
+# Epsilon-greedy: explore vs exploit
+def choose_action(s, epsilon):
+    if np.random.random() < epsilon:
+        return np.random.randint(n_actions)  # explore
+    return np.argmax(Q[s])                   # exploit (best known action)
+\`\`\`
+
+### 🕹️ Deep Q-Network (DQN)
+\`\`\`python
+import tensorflow as tf
+
+def build_dqn(state_size, action_size):
+    return tf.keras.Sequential([
+        tf.keras.layers.Dense(64, activation='relu', input_shape=(state_size,)),
+        tf.keras.layers.Dense(64, activation='relu'),
+        tf.keras.layers.Dense(action_size)  # Q-values for each action
+    ])
+# DQN = Q-Learning + Neural Network (for huge state spaces)
+\`\`\`
+
+### 🏆 RL Milestones
+| Achievement | Year | Algorithm |
+|-------------|------|-----------|
+| Atari games (superhuman) | 2013 | DQN |
+| AlphaGo beats champion | 2016 | Policy Gradient |
+| ChatGPT alignment | 2022 | RLHF |
+
+🦊 *RLHF (RL from Human Feedback) is literally how ChatGPT was made helpful and safe!*` },
+
+  { keys:['data preprocessing','feature scaling','normalization','standardization','missing values','data cleaning','encoding','one hot'],
+    answer:`## 🦊 Complete Data Preprocessing Pipeline
+
+"Garbage in, garbage out" — preprocessing is the most critical step!
+
+### 💻 Full Pipeline
+\`\`\`python
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from sklearn.impute import SimpleImputer
+from sklearn.model_selection import train_test_split
+
+df = pd.read_csv('data.csv')
+
+# 1. EXPLORE
+print(df.shape, df.isnull().sum(), df.dtypes)
+
+# 2. HANDLE MISSING VALUES
+num_cols = ['age','salary']
+cat_cols = ['city']
+
+num_imp = SimpleImputer(strategy='median')
+cat_imp = SimpleImputer(strategy='most_frequent')
+df[num_cols] = num_imp.fit_transform(df[num_cols])
+df[cat_cols] = cat_imp.fit_transform(df[cat_cols])
+
+# 3. REMOVE OUTLIERS (IQR method)
+Q1, Q3 = df['salary'].quantile([0.25,0.75])
+IQR = Q3 - Q1
+df = df[(df['salary'] >= Q1-1.5*IQR) & (df['salary'] <= Q3+1.5*IQR)]
+
+# 4. ENCODE CATEGORICAL
+df = pd.get_dummies(df, columns=['city'], drop_first=True)  # One-Hot
+
+from sklearn.preprocessing import LabelEncoder
+le = LabelEncoder()
+df['grade_enc'] = le.fit_transform(df['grade'])  # Label Encode
+
+# 5. FEATURE SCALING
+std = StandardScaler()   # mean=0, std=1 — for SVM, Neural Nets
+mm  = MinMaxScaler()     # range [0,1] — for KNN, images
+
+X = df.drop('target', axis=1)
+y = df['target']
+
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.2,random_state=42,stratify=y)
+
+# FIT on train, TRANSFORM both (prevents data leakage!)
+X_train = std.fit_transform(X_train)
+X_test  = std.transform(X_test)
+\`\`\`
+
+### 📊 Scaler Comparison
+| Scaler | Formula | Best For |
+|--------|---------|----------|
+| StandardScaler | (x-μ)/σ | SVM, Neural Nets, PCA |
+| MinMaxScaler | (x-min)/(max-min) | KNN, image pixels |
+| RobustScaler | (x-median)/IQR | Data with many outliers |
+
+🦊 *Critical: Always fit scalers on training data ONLY — then transform test data!*` },
+
+  { keys:['xgboost','lightgbm','gradient boosting','boosting'],
+    answer:`## 🦊 Gradient Boosting — XGBoost & LightGBM
+
+**Boosting** trains models sequentially where each model corrects the previous one's errors.
+
+### 🔄 How It Works
+\`\`\`
+Model 1: Trained on data → makes errors E1
+Model 2: Trained to correct E1 → makes errors E2
+Model 3: Trained to correct E2 → makes errors E3
+...
+Final = weighted sum of all models
+\`\`\`
+
+### 💻 XGBoost
+\`\`\`python
+import xgboost as xgb
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.2)
+
+model = xgb.XGBClassifier(
+    n_estimators=200, max_depth=6,
+    learning_rate=0.1, subsample=0.8,
+    eval_metric='logloss', random_state=42)
+
+model.fit(X_train, y_train,
+          eval_set=[(X_test,y_test)],
+          early_stopping_rounds=20,
+          verbose=False)
+
+print(f"XGBoost: {accuracy_score(y_test, model.predict(X_test)):.4f}")
+xgb.plot_importance(model)  # feature importance
+\`\`\`
+
+### 💻 LightGBM
+\`\`\`python
+import lightgbm as lgb
+
+model = lgb.LGBMClassifier(n_estimators=500, learning_rate=0.05, num_leaves=31)
+model.fit(X_train, y_train)
+print(f"LightGBM: {model.score(X_test,y_test):.4f}")
+\`\`\`
+
+### 📊 Comparison
+| | XGBoost | LightGBM | CatBoost |
+|-|---------|----------|----------|
+| Speed | Fast | Fastest | Moderate |
+| Categorical | Manual | Native | Native |
+| Best use | Tabular | Large data | Categorical data |
+
+🦊 *Gradient Boosting wins ~60% of Kaggle tabular competitions — the industry gold standard!*` },
+
+  { keys:['python','numpy','pandas','matplotlib','seaborn','library','libraries'],
+    answer:`## 🦊 Python AI/ML Libraries Guide
+
+### 🔢 NumPy — Numerical Computing
+\`\`\`python
+import numpy as np
+a = np.array([1,2,3,4,5])
+A = np.random.randn(3,3)     # 3x3 random matrix
+print(np.mean(a), np.std(a)) # statistics
+print(A @ A.T)               # matrix multiply
+print(a[a > 2])              # boolean indexing → [3,4,5]
+\`\`\`
+
+### 📊 Pandas — Data Manipulation
+\`\`\`python
+import pandas as pd
+df = pd.read_csv('data.csv')
+print(df.describe())                    # statistics
+df['new_col'] = df['a'] * df['b']      # create column
+df_clean = df.dropna()                  # remove nulls
+df_filled = df.fillna(df.mean())        # fill nulls
+grouped = df.groupby('category')['value'].mean()
+\`\`\`
+
+### 📈 Matplotlib & Seaborn — Visualization
+\`\`\`python
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+fig, axes = plt.subplots(1,3, figsize=(15,4))
+
+# Histogram
+axes[0].hist(df['age'], bins=20, color='orange')
+axes[0].set_title('Age Distribution')
+
+# Scatter plot
+axes[1].scatter(df['x'], df['y'], c='#FF6B1A', alpha=0.6)
+
+# Seaborn heatmap (correlation)
+sns.heatmap(df.corr(), annot=True, cmap='RdYlGn', ax=axes[2])
+
+plt.tight_layout()
+plt.show()
+\`\`\`
+
+### 🤖 scikit-learn — Classical ML
+\`\`\`python
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import cross_val_score
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+
+pipeline = Pipeline([
+    ('scaler', StandardScaler()),
+    ('model', RandomForestClassifier(n_estimators=100))
+])
+scores = cross_val_score(pipeline, X, y, cv=5)
+print(f"Accuracy: {scores.mean():.3f} ± {scores.std():.3f}")
+\`\`\`
+
+🦊 *Master these 4 libraries and you can tackle 80% of real-world ML problems!*` },
+
+  { keys:['career in ai','ai career','how to learn ai','roadmap','jobs in ai','ai roadmap','start ai'],
+    answer:`## 🦊 Complete AI/ML Career Roadmap
+
+### 🗺️ Learning Path (14 Months)
+\`\`\`
+BEGINNER (Months 1-3)
+  1. Intro to AI & ML — concepts, types, applications
+  2. Python for AI — syntax, OOP, libraries
+  3. Math for AI — linear algebra, probability, stats
+  4. Data Basics — formats, types, collection
+
+INTERMEDIATE (Months 4-6)
+  5. Data Preprocessing — cleaning, scaling, encoding
+  6. EDA — visualization, correlation, statistics
+  7. Supervised ML — regression, classification, evaluation
+  8. Unsupervised ML — clustering, PCA
+  9. Feature Engineering — SMOTE, RFE, LDA
+
+ADVANCED (Months 7-10)
+  10. Deep Learning — ANN, CNN, TensorFlow/PyTorch
+  11. Computer Vision — CNN, Transfer Learning, YOLO
+  12. NLP — Transformers, BERT, GPT, embeddings
+  13. Reinforcement Learning — Q-Learning, DQN
+
+EXPERT (Months 11-14)
+  14. Generative AI — LLMs, RAG, Agents, Fine-tuning
+  15. MLOps — Docker, FastAPI, CI/CD, Cloud
+  16. AI Ethics — Fairness, XAI, Privacy, Regulation
+  17. Capstone Projects — Build real portfolio!
+\`\`\`
+
+### 💼 Job Roles & Salaries (India)
+| Role | Avg Salary |
+|------|-----------|
+| ML Engineer | ₹12-30 LPA |
+| Data Scientist | ₹10-25 LPA |
+| Deep Learning Engineer | ₹15-40 LPA |
+| NLP Engineer | ₹14-35 LPA |
+| MLOps Engineer | ₹15-40 LPA |
+
+### 🛠️ Must-Learn Tools
+\`\`\`
+Python, NumPy, Pandas → Core data tools
+scikit-learn          → Classical ML
+TensorFlow/PyTorch    → Deep Learning
+HuggingFace           → LLMs & NLP
+FastAPI + Docker      → Deployment
+MLflow                → Experiment tracking
+Git + GitHub          → Version control
+\`\`\`
+
+### 🏆 Build Portfolio
+1. Complete all 17 FoxLearn modules
+2. Solve 3-5 Kaggle competitions
+3. Build 3 end-to-end projects on GitHub
+4. Write ML blog posts on Medium
+5. Contribute to open source
+
+🦊 *You're already on FoxLearn — that's the right first step! Consistency beats intensity. 1 hour daily > 7 hours once a week!*` },
+];
+
+// ── Smart fuzzy matcher ──
+function findAnswer(query){
+  const q = query.toLowerCase()
+    .replace(/[?!.,]/g,'')
+    .replace(/\b(please|can you|could you|tell me about|explain to me|what is the|how does|how do|how to|describe|give me|show me|i want to know|what are)\b/g,'')
+    .trim();
+  
+  let best = null, bestScore = 0;
+  for(const entry of KB){
+    let score = 0;
+    for(const key of entry.keys){
+      if(q.includes(key)){
+        score += key.length + 10; // exact match bonus
+      } else {
+        // Word-level fuzzy match
+        const keyWords = key.split(' ');
+        const qWords = q.split(' ');
+        for(const kw of keyWords){
+          if(kw.length > 2 && qWords.some(qw => qw === kw || qw.includes(kw) || kw.includes(qw))){
+            score += kw.length;
+          }
+        }
+      }
+    }
+    if(score > bestScore){ bestScore = score; best = entry; }
+  }
+  return bestScore >= 3 ? best : null;
+}
+
+function generateContextualAnswer(query, ctx){
+  const topicAnswers = {
+    'Intro to AI & ML': `## 🦊 Intro to AI & Machine Learning\n\n**AI** = Making machines simulate human intelligence.\n\n**ML** = AI that learns from data automatically.\n\n### Types of AI\n- ANI (Narrow) ✅ Today's AI\n- AGI (General) ❌ Not yet\n- ASI (Super) ❌ Theoretical\n\n### Types of ML\n- **Supervised**: Labeled data → predict labels\n- **Unsupervised**: No labels → find patterns\n- **Reinforcement**: Trial/error → maximize reward\n\n### Applications\nNetflix recommendations, Google Maps, Face recognition, Medical diagnosis, Spam filtering\n\n🦊 *What specific topic from this module do you want to explore deeper?*`,
+    'Python for AI': `## 🦊 Python for AI\n\nThe essential language for AI/ML!\n\n\`\`\`python\n# Core data structures for ML\nfeatures = [0.5, 1.2, 3.4, 0.8]  # list\nlabels = {'cat':0, 'dog':1}       # dict\n\n# Function\ndef normalize(data):\n    mn, mx = min(data), max(data)\n    return [(x-mn)/(mx-mn) for x in data]\n\n# List comprehension\nsquared = [x**2 for x in features]\nfiltered = [x for x in features if x > 1.0]\n\nprint(normalize(features))\n\`\`\`\n\n**Library order**: NumPy → Pandas → Matplotlib → scikit-learn → TF/PyTorch\n\n🦊 *What Python topic do you want to practice?*`,
+    'Math for AI': `## 🦊 Math for AI\n\nYou need these 4 math areas:\n\n**1. Linear Algebra** — vectors, matrices, operations\n\`\`\`python\nimport numpy as np\nA = np.array([[1,2],[3,4]])\nB = np.array([[5,6],[7,8]])\nprint(A @ B)  # matrix multiply\nprint(A.T)    # transpose\n\`\`\`\n\n**2. Probability** — P(event) from 0 to 1, Bayes' theorem\n\n**3. Statistics** — mean, variance, standard deviation, distributions\n\n**4. Calculus** — derivatives for gradient descent\n\`\`\`\nderivative of x² = 2x\nThis is used to find the slope → minimize loss!\n\`\`\`\n\n🦊 *Which math topic do you want explained with more detail?*`,
+  };
+  return topicAnswers[ctx] || null;
+}
+
+function foxFallback(query){
+  const q = query.toLowerCase();
+  if(/(hello|hi |hey|good morning|good evening|namaste|vanakkam)/.test(q)){
+    return `## 🦊 Hey ${state.name}! Vanakkam!\n\nI'm Fox, your AI tutor. I know everything in your syllabus:\n\n🌱 **Beginner**: AI basics, Python, Math, Data\n🔷 **Intermediate**: Preprocessing, EDA, Supervised/Unsupervised ML\n⚡ **Advanced**: Deep Learning, CV, NLP, RL\n🚀 **Expert**: GenAI, MLOps, Ethics, Capstone\n\n**Try asking:**\n- "What is machine learning?"\n- "Explain neural networks"\n- "How does gradient descent work?"\n- "Supervised vs unsupervised learning"\n- "How do I start a career in AI?"\n\n🦊 What would you like to learn today?`;
+  }
+  if(/(thank|thanks|thank you|great|awesome|perfect|nice|good job|super|excellent)/.test(q)){
+    return `🦊 You're welcome, ${state.name}! Keep that curiosity going!\n\nEvery question brings you closer to mastering AI. What's next on your learning journey?`;
+  }
+  if(/(what can you|what do you know|your topics|help me|what topics|capabilities)/.test(q)){
+    return `## 🦊 Topics I Can Teach You!\n\n**🌱 Beginner:** AI types (ANI/AGI/ASI), ML basics, Python, NumPy, Pandas, Math for AI, Data types, CSV/JSON\n\n**🔷 Intermediate:** Data preprocessing, EDA, Matplotlib, Seaborn, Linear Regression, Logistic Regression, Decision Trees, Random Forest, SVM, KNN, XGBoost, K-Means, PCA, DBSCAN, Feature Engineering, SMOTE\n\n**⚡ Advanced:** Neural Networks, Backpropagation, CNN, Transfer Learning, YOLO, NLP, Tokenization, TF-IDF, Word2Vec, BERT, Transformers, LSTM, RL, Q-Learning, DQN\n\n**🚀 Expert:** Generative AI, LLMs, Prompt Engineering, RAG, AI Agents, Fine-tuning (LoRA), MLOps, Docker, FastAPI, CI/CD, MLflow, AI Ethics, Bias detection, XAI (SHAP), GDPR\n\nJust ask anything! 🦊`;
+  }
+  if(/(code|implement|write|example|snippet|show me how)/.test(q)){
+    return `## 🦊 Specify What to Code!\n\nI have code examples for every topic. Try:\n- "Write Python code for linear regression"\n- "Implement K-Means clustering"\n- "Show me a neural network with Keras"\n- "Pandas data cleaning example"\n- "FastAPI ML deployment code"\n\n\`\`\`python\n# Quick ML starter template:\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.preprocessing import StandardScaler\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.model_selection import train_test_split, cross_val_score\n\npipeline = Pipeline([\n    ('scaler', StandardScaler()),\n    ('model', RandomForestClassifier(n_estimators=100, random_state=42))\n])\nscores = cross_val_score(pipeline, X, y, cv=5)\nprint(f"Accuracy: {scores.mean():.3f} ± {scores.std():.3f}")\n\`\`\`\n\n🦊 What specific algorithm or concept do you want code for?`;
+  }
+  return `## 🦊 I'm Here to Help, ${state.name}!\n\nI'm not sure about that exact question, but I can definitely answer it if you rephrase!\n\n**Try asking like:**\n- "What is **[topic]**?"\n- "Explain **[concept]** with examples"\n- "Difference between **[A]** and **[B]**"\n- "Python code for **[algorithm]**"\n- "How does **[technique]** work?"\n\n**Popular topics:**\n- \`What is machine learning?\`\n- \`How do neural networks work?\`\n- \`Gradient descent explained\`\n- \`Supervised vs unsupervised\`\n- \`What is RAG?\`\n- \`AI career roadmap\`\n\n🦊 Every question is a good question — just ask!`;
+}
+
+// ── Main chat function (no API needed!) ──
+function sendChat(){
+  const inp = document.getElementById('chat-input');
+  const msg = inp.value.trim();
+  if(!msg) return;
+  const ctx = document.getElementById('tutor-context').value;
+  inp.value = ''; inp.style.height = 'auto';
+  addUserMsg(msg);
+  document.getElementById('send-btn').disabled = true;
+  addTyping();
+  const area = document.getElementById('chat-area');
+  area.scrollTop = area.scrollHeight;
+
+  const delay = 500 + Math.min(msg.length * 6, 1200);
+  setTimeout(()=>{
+    removeTyping();
+    // 1. Fuzzy KB search
+    const match = findAnswer(msg);
+    if(match){ addAIMsg(match.answer); document.getElementById('send-btn').disabled=false; area.scrollTop=area.scrollHeight; return; }
+    // 2. Context-based
+    if(ctx){ const ca = generateContextualAnswer(msg, ctx); if(ca){ addAIMsg(ca); document.getElementById('send-btn').disabled=false; area.scrollTop=area.scrollHeight; return; } }
+    // 3. Smart fallback
+    addAIMsg(foxFallback(msg));
+    document.getElementById('send-btn').disabled=false;
+    area.scrollTop=area.scrollHeight;
+  }, delay);
+}
+
+
+function sendQuick(msg){
+  document.getElementById('chat-input').value=msg;
+  sendChat();
+  showView('tutor');
+}
+
+// ====== LANGUAGE SYSTEM ======
+window.currentLang = 'en';
+
+function setLang(lang) {
+  window.currentLang = lang;
+  // Toggle button active states
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  document.getElementById('btn-ta').classList.toggle('active', lang === 'ta');
+  // Update all elements with data-en / data-ta attributes
+  document.querySelectorAll('[data-en]').forEach(el => {
+    el.textContent = el.getAttribute('data-' + lang) || el.getAttribute('data-en');
+  });
+  // Update input placeholders
+  const placeholders = {
+    'inp-email': { en: 'Your email address...', ta: 'உங்கள் மின்னஞ்சல் முகவரி...' },
+    'inp-name':  { en: 'Your name...', ta: 'உங்கள் பெயர்...' },
+    'inp-class': { en: 'Your class / grade (optional)...', ta: 'உங்கள் வகுப்பு (விரும்பினால்)...' },
+    'chat-input':{ en: 'Ask your AI tutor anything...', ta: 'உங்கள் AI ஆசிரியரிடம் எதையும் கேளுங்கள்...' },
+  };
+  Object.entries(placeholders).forEach(([id, vals]) => {
+    const el = document.getElementById(id);
+    if (el) el.placeholder = vals[lang] || vals.en;
+  });
+  // Store lang in state if logged in
+  if (state && state.name) state.lang = lang;
+}
+
+window.setLang = setLang;
+
+// ====== INIT ======
+window.showLogin=showLogin;
+window.doLogin=doLogin;
+window.doLogout=doLogout;
+window.showView=showView;
+window.launchQuiz=launchQuiz;
+window.selectOpt=selectOpt;
+window.nextQ=nextQ;
+window.exitQuiz=exitQuiz;
+window.sendChat=sendChat;
+window.sendQuick=sendQuick;
+window.toggleSidebar=toggleSidebar;
+
+// Auto-resize textarea
+document.addEventListener('input',e=>{
+  if(e.target.id==='chat-input'){
+    e.target.style.height='auto';
+    e.target.style.height=Math.min(120,e.target.scrollHeight)+'px';
+  }
+});
+
+// Cursor hover on dynamic elements
+const observer=new MutationObserver(()=>{
+  document.querySelectorAll('button,a,[onclick],.nav-item,.level-card,.opt-btn,.cta-btn').forEach(el=>{
+    if(!el._foxHover){
+      el._foxHover=true;
+      el.addEventListener('mouseenter',()=>cur.classList.add('hovering'));
+      el.addEventListener('mouseleave',()=>cur.classList.remove('hovering'));
+    }
+  });
+});
+observer.observe(document.body,{childList:true,subtree:true});
+</script>
+
+</body>
+</html>
