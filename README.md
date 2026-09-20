@@ -1,4 +1,7 @@
 # EthicaLearn
+**Live demo for student dashboard : https://ai-tutor-86558.web.app
+Live demo for teacher dashboard : https://ai-tutor-86558.web.app/teacher.html**
+
 EthicaLearn is an AI-powered bilingual(Tamil,English) ethical learning platform that promotes safe and meaningful education.Our motto is to create an awareness to the school students to learn AI for government school students(TamilNadu) as well as private school students to learn in a gamified manner so they can seek their interest by learning and teacher can use the dashboard to know about their own students score easily and the we the creators also see the records in our firebase DataBase.
 
 # Overview
